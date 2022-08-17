@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post(
   "/register",
-  check("email").normalizeEmail.isEmail(),
+  check("email").normalizeEmail().isEmail(),
   check("password").isLength({ min: 6 }),
   authController.register
 );
