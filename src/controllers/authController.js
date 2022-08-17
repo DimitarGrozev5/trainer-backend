@@ -14,14 +14,14 @@ exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    return next(new HttpError("Въведени са невалидни данни! ", 422));
+    return next(new HttpError("Invalid input! ", 422));
   }
 
   // Check if user exists
   const existingUser = USERS.find((u) => u.email === email);
   if (existingUser) {
     const error = new HttpError(
-      "Потребител с такъв имейл или телефон вече съществува.",
+      "Such an user already exists!",
       422
     );
     return next(error);
@@ -33,7 +33,7 @@ exports.register = async (req, res, next) => {
     passwordHash = await bcrypt.hash(password, 12);
   } catch (err) {
     const error = new HttpError(
-      "Регистрацията се провали. Моля опитайте пак.",
+      "Registration failed! Please try again!",
       500
     );
     return next(error);
@@ -53,7 +53,7 @@ exports.register = async (req, res, next) => {
     );
   } catch (err) {
     const error = new HttpError(
-      "Потребителят е създаден, но вписването се провали. Моля опитайте да се впишете.",
+      "The user is created but login failed! Please login!",
       511
     );
     return next(error);
