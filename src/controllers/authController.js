@@ -20,10 +20,7 @@ exports.register = async (req, res, next) => {
   // Check if user exists
   const existingUser = USERS.find((u) => u.email === email);
   if (existingUser) {
-    const error = new HttpError(
-      "Such an user already exists!",
-      422
-    );
+    const error = new HttpError("Such an user already exists!", 422);
     return next(error);
   }
 
@@ -32,10 +29,7 @@ exports.register = async (req, res, next) => {
   try {
     passwordHash = await bcrypt.hash(password, 12);
   } catch (err) {
-    const error = new HttpError(
-      "Registration failed! Please try again!",
-      500
-    );
+    const error = new HttpError("Registration failed! Please try again!", 500);
     return next(error);
   }
 
