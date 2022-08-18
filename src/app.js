@@ -4,6 +4,9 @@ const HttpError = require("./models/HttpError");
 const authRouter = require("./routers/authRoutes");
 const workoutsRoutes = require("./routers/workoutsRoutes");
 const { errorHandler } = require("./controllers/errorHandler");
+const {
+  deleteExpiredJWTs,
+} = require("./tasks/deleteExpiredBlacklistedJWTsTask");
 
 const app = express();
 
@@ -36,11 +39,11 @@ app.use(errorHandler);
 
 app.listen(process.env.PORT, async () => {
   // Delete expired JWTs on startup
-  // try {
-  //   await deleteExpiredJWTs();
-  // } catch (err) {
-  //   console.log("Could not delete expired blacklisted JWTs: " + err);
-  // }
+  try {
+    await deleteExpiredJWTs();
+  } catch (err) {
+    console.log("Could not delete expired blacklisted JWTs: " + err);
+  }
 
   console.log(`Server is running on port ${process.env.PORT}`);
 });
