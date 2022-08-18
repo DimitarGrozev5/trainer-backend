@@ -53,7 +53,7 @@ exports.register = async (req, res, next) => {
 
   // Return new user
   res.status(201).json({
-    userId: newUser.id,
+    userId: newUser._id,
     token,
   });
 };
@@ -96,7 +96,7 @@ exports.login = async (req, res, next) => {
 
   // Return user data
   res.status(201).json({
-    userId: targetUser.id,
+    userId: targetUser._id,
     token,
   });
 };
@@ -130,7 +130,7 @@ exports.refreshToken = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   // Get post data
-  
+
 
   // Get expiration date from token
   // Check if token is in blacklist
