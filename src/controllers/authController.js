@@ -68,21 +68,21 @@ exports.login = async (req, res, next) => {
   // Find user
   const targetUser = USERS.find((u) => u.email === email);
   if (!targetUser) {
-    const error = new HttpError("Invalid email or password!", 422);
+    const error = new HttpError("Wrong email or password!", 422);
     return next(error);
   }
 
   // Validate password
   let isValidPassword = false;
   try {
-    isValidPassword = await bcrypt.compare(password, existingUser.passwordHash);
+    isValidPassword = await bcrypt.compare(password, targetUser.password);
   } catch (err) {
     const error = new HttpError("Login failed! Please try again!", 500);
     return next(error);
   }
 
   if (!isValidPassword) {
-    const error = new HttpError("Invalid email or password!", 422);
+    const error = new HttpError("Wrong email or password!", 422);
     return next(error);
   }
 
@@ -101,8 +101,8 @@ exports.login = async (req, res, next) => {
 
   // Return user data
   res.status(201).json({
-    userId: newUser.id,
-    email: newUser.email,
+    userId: targetUser.id,
+    email: targetUser.email,
     token,
   });
 };
