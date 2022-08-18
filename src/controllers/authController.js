@@ -130,10 +130,34 @@ exports.refreshToken = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   // Get post data
+  const userId = req.params.userId;
+  const token = req.headers.authorization;
 
+  // Check if token is in blacklist
+
+  // Add token to blacklist
 
   // Get expiration date from token
-  // Check if token is in blacklist
-  // Add token to blacklist
+  let expiresBy;
+  try {
+    const decodedToken = jwt.verify(token, process.env.jwtKey);
+    expiresBy = decodedToken.exp * 1000;
+  } catch (err) {
+    const error = new HttpError("Internal server error!", 401);
+    return next(error);
+  }
+
   // Start delete timer
+  const timeout = expiresBy - new Date();
+  if (timeout >= 0) {
+    setTimeout(async () => {
+      try {
+        // Delete token from blacklist
+        // await BlacklistedJWT.findOneAndDelete({ token });
+      } catch (err) {
+        // Maybe start another timer to try the deletion again?
+        console.log(err);
+      }
+    }, timeout);
+  }
 };
