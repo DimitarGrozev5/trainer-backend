@@ -54,7 +54,6 @@ exports.register = async (req, res, next) => {
   // Return new user
   res.status(201).json({
     userId: newUser.id,
-    email: newUser.email,
     token,
   });
 };
@@ -98,7 +97,6 @@ exports.login = async (req, res, next) => {
   // Return user data
   res.status(201).json({
     userId: targetUser.id,
-    email: targetUser.email,
     token,
   });
 };
@@ -113,24 +111,27 @@ exports.refreshToken = async (req, res, next) => {
   // Generate new token
   let token;
   try {
-    token = jwt.sign({ userId: targetUser._id }, process.env.jwtKey, {
+    token = jwt.sign({ userId }, process.env.jwtKey, {
       expiresIn: "7d",
     });
   } catch (err) {
-    const error = new HttpError("Login failed! Please try again!", 500);
+    const error = new HttpError("Token refresh failed! Try again later", 500);
     return next(error);
   }
 
   // Return user data
-  res.status(201).json({
-    userId: targetUser.id,
-    email: targetUser.email,
+  res.json({
+    userId: userId,
     token,
   });
+
+  // TODO: Add old token to blacklist
 };
 
 exports.logout = async (req, res, next) => {
   // Get post data
+  
+
   // Get expiration date from token
   // Check if token is in blacklist
   // Add token to blacklist
