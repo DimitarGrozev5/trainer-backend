@@ -63,10 +63,48 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   // Get post data
+  const { email, password } = req.body;
+
   // Find user
+  const targetUser = USERS.find((u) => u.email === email);
+  if (!targetUser) {
+    const error = new HttpError("Invalid email or password!", 422);
+    return next(error);
+  }
+
   // Validate password
+  let isValidPassword = false;
+  try {
+    isValidPassword = await bcrypt.compare(password, existingUser.passwordHash);
+  } catch (err) {
+    const error = new HttpError("Login failed! Please try again!", 500);
+    return next(error);
+  }
+
+  if (!isValidPassword) {
+    const error = new HttpError("Invalid email or password!", 422);
+    return next(error);
+  }
+
   // Generate JWT
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: targetUser._id, email: targetUser.email },
+      process.env.jwtKey,
+      { expiresIn: "7d" }
+    );
+  } catch (err) {
+    const error = new HttpError("Login failed! Please try again!", 500);
+    return next(error);
+  }
+
   // Return user data
+  res.status(201).json({
+    userId: newUser.id,
+    email: newUser.email,
+    token,
+  });
 };
 
 exports.refreshToken = async (req, res, next) => {
