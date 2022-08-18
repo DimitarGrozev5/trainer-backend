@@ -40,11 +40,9 @@ exports.register = async (req, res, next) => {
   // Generate JWT
   let token;
   try {
-    token = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
-      process.env.jwtKey,
-      { expiresIn: "7d" }
-    );
+    token = jwt.sign({ userId: newUser._id }, process.env.jwtKey, {
+      expiresIn: "7d",
+    });
   } catch (err) {
     const error = new HttpError(
       "The user is created but login failed! Please login!",
@@ -89,11 +87,9 @@ exports.login = async (req, res, next) => {
   // Generate JWT
   let token;
   try {
-    token = jwt.sign(
-      { userId: targetUser._id, email: targetUser.email },
-      process.env.jwtKey,
-      { expiresIn: "7d" }
-    );
+    token = jwt.sign({ userId: targetUser._id }, process.env.jwtKey, {
+      expiresIn: "7d",
+    });
   } catch (err) {
     const error = new HttpError("Login failed! Please try again!", 500);
     return next(error);
@@ -108,10 +104,29 @@ exports.login = async (req, res, next) => {
 };
 
 exports.refreshToken = async (req, res, next) => {
-  // Get post data
-  // Validate token
-  // Check if token is not in blacklist
+  // The Route is guarded, so we can be sure that the token is valid and not blacklisted
+
+  // Get data
+  const userId = req.params.userId;
+  const oldToken = req.headers.authorization;
+
   // Generate new token
+  let token;
+  try {
+    token = jwt.sign({ userId: targetUser._id }, process.env.jwtKey, {
+      expiresIn: "7d",
+    });
+  } catch (err) {
+    const error = new HttpError("Login failed! Please try again!", 500);
+    return next(error);
+  }
+
+  // Return user data
+  res.status(201).json({
+    userId: targetUser.id,
+    email: targetUser.email,
+    token,
+  });
 };
 
 exports.logout = async (req, res, next) => {

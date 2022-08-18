@@ -1,7 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 
-// const { isAuth } = require("../middlewares/authMiddleware");
+const { isAuth } = require("../middlewares/authMiddleware");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.post(
   authController.register
 );
 router.post("/login", authController.login);
+router.post("/:userId/refresh", isAuth, authController.refreshToken);
 router.post("/logout", authController.logout);
 
 module.exports = router;
