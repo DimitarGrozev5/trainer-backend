@@ -130,12 +130,12 @@ exports.refreshToken = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   // Get post data
-  const userId = req.params.userId;
   const token = req.headers.authorization;
 
-  // Check if token is in blacklist
-
   // Add token to blacklist
+
+  // Return success
+  res.json({ message: "Successfully loged out!" });
 
   // Get expiration date from token
   let expiresBy;
