@@ -148,16 +148,19 @@ exports.logout = async (req, res, next) => {
   }
 
   // Start delete timer
-  const timeout = expiresBy - new Date();
-  if (timeout >= 0) {
+  const timeout = Math.max(0, expiresBy - new Date());
+
+  const deleteTokenAfterTimeout = (timeout) =>
     setTimeout(async () => {
       try {
         // Delete token from blacklist
         // await BlacklistedJWT.findOneAndDelete({ token });
       } catch (err) {
-        // Maybe start another timer to try the deletion again?
+        // Start another timer to try the deletion again
+        deleteTokenAfterTimeout(10 * 60 * 1000);
         console.log(err);
       }
     }, timeout);
-  }
+
+  deleteTokenAfterTimeout(timeout);
 };
