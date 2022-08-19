@@ -1,0 +1,6 @@
+{
+  "env": {
+    "jwtKey": "super-secred-development-jwt-key",
+    "PORT": "5000"
+  }
+}
