@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/HttpError");
-
-const USERS = [];
+const User = require("../models/User");
+const BlacklistedJWT = require("../models/BlacklistedJWT");
 
 exports.register = async (req, res, next) => {
   // Get post data
@@ -18,7 +18,17 @@ exports.register = async (req, res, next) => {
   }
 
   // Check if user exists
-  const existingUser = USERS.find((u) => u.email === email);
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email });
+  } catch (err) {
+    const error = new HttpError(
+      "Registration failed! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
   if (existingUser) {
     const error = new HttpError("Such an user already exists!", 422);
     return next(error);
@@ -34,8 +44,21 @@ exports.register = async (req, res, next) => {
   }
 
   // Create new user
-  const newUser = { _id: +new Date(), email, password: passwordHash };
-  USERS.push(newUser);
+  const newUser = new User({
+    email,
+    password: passwordHash,
+    activePrograms: [],
+  });
+
+  try {
+    await newUser.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Registration failed! Please try again later!",
+      500
+    );
+    return next(error);
+  }
 
   // Generate JWT
   let token;
@@ -45,7 +68,7 @@ exports.register = async (req, res, next) => {
     });
   } catch (err) {
     const error = new HttpError(
-      "The user is created but login failed! Please login!",
+      "The user is created but login failed! Try to login again!",
       511
     );
     return next(error);
@@ -63,7 +86,17 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   // Find user
-  const targetUser = USERS.find((u) => u.email === email);
+  let targetUser;
+  try {
+    targetUser = await User.find({ email });
+  } catch (err) {
+    const error = new HttpError(
+      "Registration failed! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
   if (!targetUser) {
     const error = new HttpError("Wrong email or password!", 422);
     return next(error);
@@ -125,17 +158,44 @@ exports.refreshToken = async (req, res, next) => {
     token,
   });
 
-  // TODO: Add old token to blacklist
+  try {
+    await saveTokenToBlacklist(oldToken);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.logout = async (req, res, next) => {
   // Get post data
   const token = req.headers.authorization;
 
-  // Add token to blacklist
+  try {
+    await saveTokenToBlacklist(token);
+  } catch (err) {
+    return next(err);
+  }
 
   // Return success
-  res.json({ message: "Successfully loged out!" });
+  res.json({
+    message: "Success",
+  });
+};
+
+async function saveTokenToBlacklist(token) {
+  // Check if token is in the blacklist
+  let existingToken;
+  try {
+    existingToken = await BlacklistedJWT.findOne({ token });
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError("Logout failed! Please try again later!", 500);
+    throw error;
+  }
+
+  // Return success
+  if (existingToken) {
+    return true;
+  }
 
   // Get expiration date from token
   let expiresBy;
@@ -144,7 +204,16 @@ exports.logout = async (req, res, next) => {
     expiresBy = decodedToken.exp * 1000;
   } catch (err) {
     const error = new HttpError("Internal server error!", 401);
-    return next(error);
+    throw error;
+  }
+
+  // Add token to blacklist
+  const newBlacklistToken = new BlacklistedJWT({ token, expiresBy });
+  try {
+    await newBlacklistToken.save();
+  } catch (err) {
+    const error = new HttpError("Logout failed! Please try again later!", 500);
+    throw error;
   }
 
   // Start delete timer
@@ -154,7 +223,7 @@ exports.logout = async (req, res, next) => {
     setTimeout(async () => {
       try {
         // Delete token from blacklist
-        // await BlacklistedJWT.findOneAndDelete({ token });
+        await BlacklistedJWT.findOneAndDelete({ token });
       } catch (err) {
         // Start another timer to try the deletion again
         deleteTokenAfterTimeout(10 * 60 * 1000);
@@ -163,4 +232,6 @@ exports.logout = async (req, res, next) => {
     }, timeout);
 
   deleteTokenAfterTimeout(timeout);
-};
+
+  return true;
+}

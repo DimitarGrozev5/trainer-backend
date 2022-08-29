@@ -7,7 +7,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 
-  activeWorkouts: [
+  activePrograms: [
     {
       // TODO: add only allowed IDs
       id: { type: String, required: true },
