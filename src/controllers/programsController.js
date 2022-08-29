@@ -1,14 +1,120 @@
+const HttpError = require("../models/HttpError");
+const User = require("../models/User");
+
 // Get all programs for user
-exports.getAll = async (req, res, next) => {};
+exports.getAll = async (req, res, next) => {
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot fetch programs! Please try again later!",
+      500
+    );
+    return next(error);
+  }
 
-// Get specific workout
-exports.get = async (req, res, next) => {};
+  res.json(user.activePrograms);
+};
 
-// Start doing a specific workout
-exports.add = async (req, res, next) => {};
+// Get specific program
+const getSpecificProgram = async (userId, programId) => {
+  let user;
+  try {
+    user = await User.findById(userId);
+  } catch (err) {
+    throw err;
+  }
 
-// Delete specific workout
+  const program = user.activePrograms.findOne((pr) => pr.id === programId);
+
+  return program;
+};
+exports.get = async (req, res, next) => {
+  // Get program id
+  const { programId } = req.body;
+
+  let program;
+  try {
+    program = getSpecificProgram(req.userData.userId, programId);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot fetch program! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  if (!program) {
+    console.log("Program not found!");
+    const error = new HttpError(
+      "The user is not using this program! Please try again later!",
+      404
+    );
+    return next(error);
+  }
+
+  res.json(program);
+};
+
+// Start doing a specific program
+exports.add = async (req, res, next) => {
+  // Get program
+  const { id, state } = req.body;
+
+  // TODO: Validate program
+  // Make sure only valid programs can be entered in to the database
+
+  const newProgram = { id, state };
+
+  // Get User
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+    if (!user) {
+      throw "User not found";
+    }
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Adding the program failed! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  // Make sure the program is not added
+  const existingProgram = user.activePrograms.find((pr) => pr.id === id);
+  if (existingProgram) {
+    console.log("The program already exists");
+    const error = new HttpError(
+      "The user is allready doing this proram!",
+      422
+    );
+    return next(error);
+  }
+
+  // Add program to user
+  user.activePrograms.push(newProgram);
+  try {
+    await user.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Adding the program failed! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  // Return new program
+  res.json(newProgram);
+};
+
+// Delete specific program
 exports.remove = async (req, res, next) => {};
 
-// Update a specific workout
+// Update a specific program
 exports.update = async (req, res, next) => {};

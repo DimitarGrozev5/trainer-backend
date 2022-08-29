@@ -9,11 +9,11 @@ const router = express.Router();
 // Get all workouts for user
 router.get("/", isAuth, programsController.getAll);
 
+// Start doing a specific workout
+router.post("/", isAuth, programsController.add);
+
 // Get specific workout
 router.get("/:programId", isAuth, programsController.get);
-
-// Start doing a specific workout
-router.post("/:programId", isAuth, programsController.add);
 
 // Delete specific workout
 router.delete("/:programId", isAuth, programsController.remove);
