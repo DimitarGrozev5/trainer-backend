@@ -13,7 +13,7 @@ exports.isAuth = async (req, res, next) => {
     // Verify JWT
     const decodedToken = jwt.verify(token, process.env.jwtKey);
 
-    // TODO: Check if token is in blacklist
+    // Check if token is in blacklist
     let blacklistedToken;
     try {
       blacklistedToken = await BlacklistedJWT.findOne({ token });
