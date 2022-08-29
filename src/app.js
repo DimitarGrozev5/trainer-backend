@@ -37,6 +37,9 @@ app.use((req, res, next) => {
 // Global error handler
 app.use(errorHandler);
 
+
+// Connect to DB and start app
+
 app.listen(process.env.PORT, async () => {
   // Delete expired JWTs on startup
   try {
