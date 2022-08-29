@@ -27,17 +27,19 @@ const getSpecificProgram = async (userId, programId) => {
     throw err;
   }
 
-  const program = user.activePrograms.findOne((pr) => pr.id === programId);
+  const program = user.activePrograms.find((pr) => {
+    return pr.id === programId;
+  });
 
   return program;
 };
 exports.get = async (req, res, next) => {
   // Get program id
-  const { programId } = req.body;
+  const programId = req.params.programId;
 
   let program;
   try {
-    program = getSpecificProgram(req.userData.userId, programId);
+    program = await getSpecificProgram(req.userData.userId, programId);
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -89,10 +91,7 @@ exports.add = async (req, res, next) => {
   const existingProgram = user.activePrograms.find((pr) => pr.id === id);
   if (existingProgram) {
     console.log("The program already exists");
-    const error = new HttpError(
-      "The user is allready doing this proram!",
-      422
-    );
+    const error = new HttpError("The user is allready doing this proram!", 422);
     return next(error);
   }
 
