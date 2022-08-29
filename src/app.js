@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const HttpError = require("./models/HttpError");
 const authRouter = require("./routers/authRoutes");
-const workoutsRoutes = require("./routers/workoutsRoutes");
+const programsRoutes = require("./routers/programsRoutes");
 const { errorHandler } = require("./controllers/errorHandler");
 const {
   deleteExpiredJWTs,
@@ -28,7 +28,7 @@ app.use(express.json({ extended: false }));
 
 // Setup routes
 app.use("/api/users", authRouter); // Auth routes
-app.use("/api/users/:userId", workoutsRoutes); // Workouts Routes
+app.use("/api/users/:userId", programsRoutes); // Programs Routes
 
 // 404 route
 app.use((req, res, next) => {
