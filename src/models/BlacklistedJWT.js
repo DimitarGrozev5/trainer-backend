@@ -7,6 +7,7 @@ const blacklistedSchema = new Schema({
   token: { type: String, required: true, unique: true },
   expiresBy: { type: Number, required: true },
 });
+
 blacklistedSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model("BlacklistedJWT", blacklistedSchema);
