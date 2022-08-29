@@ -26,6 +26,7 @@ exports.register = async (req, res, next) => {
       "Registration failed! Please try again later!",
       500
     );
+    console.log(err);
     return next(error);
   }
 
@@ -40,6 +41,7 @@ exports.register = async (req, res, next) => {
     passwordHash = await bcrypt.hash(password, 12);
   } catch (err) {
     const error = new HttpError("Registration failed! Please try again!", 500);
+    console.log(err);
     return next(error);
   }
 
@@ -57,6 +59,7 @@ exports.register = async (req, res, next) => {
       "Registration failed! Please try again later!",
       500
     );
+    console.log(err);
     return next(error);
   }
 
@@ -71,6 +74,7 @@ exports.register = async (req, res, next) => {
       "The user is created but login failed! Try to login again!",
       511
     );
+    console.log(err);
     return next(error);
   }
 
@@ -88,12 +92,13 @@ exports.login = async (req, res, next) => {
   // Find user
   let targetUser;
   try {
-    targetUser = await User.find({ email });
+    targetUser = await User.findOne({ email });
   } catch (err) {
     const error = new HttpError(
       "Registration failed! Please try again later!",
       500
     );
+    console.log(err);
     return next(error);
   }
 
@@ -108,6 +113,7 @@ exports.login = async (req, res, next) => {
     isValidPassword = await bcrypt.compare(password, targetUser.password);
   } catch (err) {
     const error = new HttpError("Login failed! Please try again!", 500);
+    console.log(err);
     return next(error);
   }
 
@@ -124,6 +130,7 @@ exports.login = async (req, res, next) => {
     });
   } catch (err) {
     const error = new HttpError("Login failed! Please try again!", 500);
+    console.log(err);
     return next(error);
   }
 
@@ -149,6 +156,7 @@ exports.refreshToken = async (req, res, next) => {
     });
   } catch (err) {
     const error = new HttpError("Token refresh failed! Try again later", 500);
+    console.log(err);
     return next(error);
   }
 
@@ -172,6 +180,7 @@ exports.logout = async (req, res, next) => {
   try {
     await saveTokenToBlacklist(token);
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 
