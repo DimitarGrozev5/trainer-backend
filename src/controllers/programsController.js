@@ -113,7 +113,47 @@ exports.add = async (req, res, next) => {
 };
 
 // Delete specific program
-exports.remove = async (req, res, next) => {};
+exports.remove = async (req, res, next) => {
+  // Get program id
+  const programId = req.params.programId;
+
+  // Get user
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot remove program! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  // Find and remove program by programId
+  let removedProgram = null;
+  user.activePrograms = user.activePrograms.filter((pr) => {
+    if (pr.id === programId) {
+      removedProgram = { id: pr.id, state: pr.state };
+      return false;
+    }
+
+    return true;
+  });
+
+  try {
+    await user.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot remove program! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  res.json(removedProgram);
+};
 
 // Update a specific program
 exports.update = async (req, res, next) => {
