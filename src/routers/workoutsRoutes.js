@@ -5,7 +5,7 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-// Get all workouts
+// Get all workouts for user
 router.get("/", authController.login);
 
 // Get specific workout
