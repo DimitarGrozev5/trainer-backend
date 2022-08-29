@@ -116,4 +116,47 @@ exports.add = async (req, res, next) => {
 exports.remove = async (req, res, next) => {};
 
 // Update a specific program
-exports.update = async (req, res, next) => {};
+exports.update = async (req, res, next) => {
+  // Get program id
+  const programId = req.params.programId;
+
+  // Get program update
+  const updatedProgram = req.body;
+
+  // TODO: Validate program
+
+  // Get user
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot update program! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  // Find and update program by programId
+  user.activePrograms = user.activePrograms.map((pr) => {
+    if (pr.id !== programId) {
+      return pr;
+    }
+
+    return updatedProgram;
+  });
+
+  try {
+    await user.save();
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      "Cannot update program! Please try again later!",
+      500
+    );
+    return next(error);
+  }
+
+  res.json(updatedProgram);
+};
