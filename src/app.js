@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const HttpError = require("./models/HttpError");
 const authRouter = require("./routers/authRoutes");
@@ -37,16 +38,20 @@ app.use((req, res, next) => {
 // Global error handler
 app.use(errorHandler);
 
-
 // Connect to DB and start app
+mongoose
+  .connect(process.env.mongoUrl)
+  .then(() => {
+    console.log("Connected to DB");
+    app.listen(process.env.PORT, async () => {
+      // Delete expired JWTs on startup
+      try {
+        await deleteExpiredJWTs();
+      } catch (err) {
+        console.log("Could not delete expired blacklisted JWTs: " + err);
+      }
 
-app.listen(process.env.PORT, async () => {
-  // Delete expired JWTs on startup
-  try {
-    await deleteExpiredJWTs();
-  } catch (err) {
-    console.log("Could not delete expired blacklisted JWTs: " + err);
-  }
-
-  console.log(`Server is running on port ${process.env.PORT}`);
-});
+      console.log(`Server is running on port ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => console.log(err));
