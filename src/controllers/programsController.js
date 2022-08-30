@@ -1,6 +1,7 @@
 const HttpError = require("../models/HttpError");
 const User = require("../models/User");
 
+// TODO: If a program is late, change it's sessionDate to today
 // Get all programs for user
 exports.getAll = async (req, res, next) => {
   let user;
