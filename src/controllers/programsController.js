@@ -1,5 +1,6 @@
 const HttpError = require("../models/HttpError");
 const User = require("../models/User");
+const { validateProgram } = require("../utils/validate-program");
 
 // TODO: If a program is late, change it's sessionDate to today
 // Get all programs for user
@@ -67,8 +68,16 @@ exports.add = async (req, res, next) => {
   // Get program
   const { id, state } = req.body;
 
-  // TODO: Validate program
   // Make sure only valid programs can be entered in to the database
+  const isValid = validateProgram(id, state);
+  if (!isValid) {
+    console.log("Invalid program data");
+    const error = new HttpError(
+      "Invalid data is send! Please try again later!",
+      422
+    );
+    return next(error);
+  }
 
   const newProgram = { id, state };
 
@@ -164,7 +173,16 @@ exports.update = async (req, res, next) => {
   // Get program update
   const updatedProgram = req.body;
 
-  // TODO: Validate program
+  // Validate program
+  const isValid = validateProgram(updatedProgram.id, updatedProgram.state);
+  if (!isValid) {
+    console.log("Invalid program data");
+    const error = new HttpError(
+      "Invalid data is send! Please try again later!",
+      422
+    );
+    return next(error);
+  }
 
   // Get user
   let user;

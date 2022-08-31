@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const { validIds } = require("../utils/validate-program");
 
 const Schema = mongoose.Schema;
 
@@ -9,8 +10,7 @@ const userSchema = new Schema({
 
   activePrograms: [
     {
-      // TODO: add only allowed IDs
-      id: { type: String, required: true },
+      id: { type: String, required: true, enum: validIds },
       state: { type: Object, required: true },
     },
   ],
