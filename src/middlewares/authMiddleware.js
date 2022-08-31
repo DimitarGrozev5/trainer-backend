@@ -25,7 +25,7 @@ exports.isAuth = async (req, res, next) => {
     }
 
     // Decorate request
-    req.userData = { userId: decodedToken.userId };
+    req.userData = { userId: decodedToken.userId, userToken: token };
 
     next();
   } catch (err) {
