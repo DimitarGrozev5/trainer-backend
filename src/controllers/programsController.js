@@ -1,7 +1,7 @@
 const HttpError = require('../models/HttpError');
 const User = require('../models/User');
 const { programs, eqStates } = require('../programs');
-const { hashValue } = require('../services/hashService');
+const { hashValue, validateHash } = require('../services/hashService');
 const { rand } = require('../services/randomService');
 const { validateProgram } = require('../utils/validate-program');
 
@@ -20,7 +20,15 @@ exports.getAll = async (req, res, next) => {
     return next(error);
   }
 
-  res.json(user.activePrograms);
+  // Hash versions
+  const activePrograms = await Promise.all(
+    user.activePrograms.map(async (pr) => {
+      const version = await hashValue(pr.version.toString());
+      return { id: pr.id, state: pr.state, version };
+    })
+  );
+
+  res.json(activePrograms);
 };
 
 // Get specific program
@@ -36,8 +44,12 @@ const getSpecificProgram = async (userId, programId) => {
     return pr.id === programId;
   });
 
-  return program;
+  // Hash version
+  const version = hashValue(program.version.toString());
+
+  return { id: program.id, state: program.state, version };
 };
+
 exports.get = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
@@ -152,8 +164,9 @@ exports.add = async (req, res, next) => {
 
 // Delete specific program
 exports.remove = async (req, res, next) => {
-  // Get program id
+  // Get program id and version
   const programId = req.params.programId;
+  const { version } = req.body;
 
   // Get user
   let user;
@@ -168,11 +181,29 @@ exports.remove = async (req, res, next) => {
     return next(error);
   }
 
+  // Find program by programId
+  const program = user.activePrograms.find((pr) => pr.id === programId);
+  if (!program) {
+    console.log('ID missing in active programs');
+    const error = new HttpError("This program isn't active!", 404);
+    return next(error);
+  }
+  const actualVersion = program.version.toString();
+
+  // Validate version
+  const isValid = await validateHash(actualVersion, version);
+  if (!isValid) {
+    console.log("versions don't match");
+    const error = new HttpError(
+      'Your data is not up to date! Please reload your page!',
+      410
+    );
+    return next(error);
+  }
+
   // Find and remove program by programId
-  let removedProgram = null;
   user.activePrograms = user.activePrograms.filter((pr) => {
     if (pr.id === programId) {
-      removedProgram = { id: pr.id, state: pr.state };
       return false;
     }
 
@@ -190,7 +221,7 @@ exports.remove = async (req, res, next) => {
     return next(error);
   }
 
-  res.json(removedProgram);
+  res.json({ success: true });
 };
 
 // Update a specific program
