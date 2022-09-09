@@ -275,8 +275,6 @@ exports.update = async (req, res, next) => {
   });
 
   // Compare passed initState, to generated initState
-  console.log(state);
-  console.log(gState);
   const areEqual = eqStates(state, gState);
   if (!areEqual) {
     console.log('Invalid state passed');
@@ -306,5 +304,7 @@ exports.update = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ success: true, version: nextVersion });
+  const hashed = await hashValue(nextVersion);
+
+  res.json({ success: true, version: hashed });
 };
