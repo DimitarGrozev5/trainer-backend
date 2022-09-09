@@ -1,4 +1,6 @@
-const CircularArray = require('../../utils/circular-array');
+const { CircularArray } = require('../../utils/circular-array');
+
+const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 
 module.exports = {
   getInitData: ({ schedule }) => {
@@ -10,18 +12,22 @@ module.exports = {
     };
   },
 
-  getNextState: (prevState, achieved) => {
+  getNextState: (
+    prevState,
+    achieved,
+    { forceProgress = false } = {
+      forceProgress: false,
+    }
+  ) => {
     const {
       sessionIndex,
       lastHeavySessionAchieved,
       schedule,
       currentScheduleIndex,
     } = prevState;
-
     const trainingPlan = new CircularArray(trainingRotation, sessionIndex);
 
-    const schedulePlan =
-      new CircularArray() < number > (schedule, currentScheduleIndex);
+    const schedulePlan = new CircularArray(schedule, currentScheduleIndex);
 
     const nextScheduleIndex = schedulePlan.getIndex(+1);
 
@@ -39,7 +45,7 @@ module.exports = {
       heavySessionAchieved = lastHeavySessionAchieved;
 
       // If the last heavy session the user achieved the required number of sets, progress
-      if (lastHeavySessionAchieved === trainingPlan.i(-1)) {
+      if (forceProgress || lastHeavySessionAchieved === trainingPlan.i(-1)) {
         nextSessionIndex = trainingPlan.getIndex(+1);
       } else {
         nextSessionIndex = trainingPlan.getIndex(-1);

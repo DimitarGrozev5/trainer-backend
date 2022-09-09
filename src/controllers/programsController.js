@@ -2,7 +2,7 @@ const HttpError = require('../models/HttpError');
 const User = require('../models/User');
 const { programs, eqStates } = require('../programs');
 const { hashValue, validateHash } = require('../services/hashService');
-const { rand } = require('../services/randomService');
+const { rand, nextRand } = require('../services/randomService');
 const { validateProgram } = require('../utils/validate-program');
 
 // TODO: If a program is late, change it's sessionDate to today
@@ -228,20 +228,7 @@ exports.remove = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
-
-  // Get program update
-  const updatedProgram = req.body;
-
-  // Validate program
-  const isValid = validateProgram(updatedProgram.id, updatedProgram.state);
-  if (!isValid) {
-    console.log('Invalid program data');
-    const error = new HttpError(
-      'Invalid data is send! Please try again later!',
-      422
-    );
-    return next(error);
-  }
+  const { id, state, achieved, version } = req.body;
 
   // Get user
   let user;
@@ -256,13 +243,56 @@ exports.update = async (req, res, next) => {
     return next(error);
   }
 
+  // Find program by programId
+  const programData = user.activePrograms.find((pr) => pr.id === id);
+  if (!programData) {
+    console.log('ID missing in active programs');
+    const error = new HttpError("This program isn't active!", 404);
+    return next(error);
+  }
+
+  // Validate version
+  const actualVersion = programData.version.toString();
+  const isValid = await validateHash(actualVersion, version);
+  if (!isValid) {
+    console.log("versions don't match");
+    const error = new HttpError(
+      'Your data is not up to date! Please reload your page!',
+      410
+    );
+    return next(error);
+  }
+
+  // Generate next State for program// Get selected program
+  if (!programs.has(id)) {
+    console.log('Invalid program id');
+    const error = new HttpError('Invalid program id!', 422);
+    return next(error);
+  }
+  const program = programs.get(id);
+  const gState = program.getNextState(programData.state, achieved, {
+    forceProgress: achieved.forced,
+  });
+
+  // Compare passed initState, to generated initState
+  console.log(state);
+  console.log(gState);
+  const areEqual = eqStates(state, gState);
+  if (!areEqual) {
+    console.log('Invalid state passed');
+    const error = new HttpError('Invalid data!', 422);
+    return next(error);
+  }
+
   // Find and update program by programId
+  let nextVersion = '';
   user.activePrograms = user.activePrograms.map((pr) => {
     if (pr.id !== programId) {
       return pr;
     }
 
-    return updatedProgram;
+    nextVersion = nextRand(pr.version.toString());
+    return { id, state, version: nextVersion };
   });
 
   try {
@@ -276,5 +306,5 @@ exports.update = async (req, res, next) => {
     return next(error);
   }
 
-  res.json(updatedProgram);
+  res.json({ success: true, version: nextVersion });
 };
