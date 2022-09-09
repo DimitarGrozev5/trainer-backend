@@ -1,4 +1,5 @@
-const ees = require('./ees/ees-program');
+const ees = require('./ees/even-easier-strength');
+const EnduroGrip = require('./enduro-grip/enduro-grip');
 
 // Store valid program ids
 const validIds = ['ees', 'EnduroGrip'];
@@ -8,6 +9,7 @@ exports.validIds = validIds;
 const programs = new Map();
 
 programs.set('ees', ees);
+programs.set('EnduroGrip', EnduroGrip);
 
 exports.programs = programs;
 
