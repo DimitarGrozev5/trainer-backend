@@ -1,6 +1,9 @@
-const HttpError = require("../models/HttpError");
-const User = require("../models/User");
-const { validateProgram } = require("../utils/validate-program");
+const HttpError = require('../models/HttpError');
+const User = require('../models/User');
+const { programs, eqStates } = require('../programs');
+const { hashValue } = require('../services/hashService');
+const { rand } = require('../services/randomService');
+const { validateProgram } = require('../utils/validate-program');
 
 // TODO: If a program is late, change it's sessionDate to today
 // Get all programs for user
@@ -11,7 +14,7 @@ exports.getAll = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot fetch programs! Please try again later!",
+      'Cannot fetch programs! Please try again later!',
       500
     );
     return next(error);
@@ -45,16 +48,16 @@ exports.get = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot fetch program! Please try again later!",
+      'Cannot fetch program! Please try again later!',
       500
     );
     return next(error);
   }
 
   if (!program) {
-    console.log("Program not found!");
+    console.log('Program not found!');
     const error = new HttpError(
-      "The user is not using this program! Please try again later!",
+      'The user is not using this program! Please try again later!',
       404
     );
     return next(error);
@@ -66,32 +69,19 @@ exports.get = async (req, res, next) => {
 // Start doing a specific program
 exports.add = async (req, res, next) => {
   // Get program
-  const { id, state } = req.body;
-
-  // Make sure only valid programs can be entered in to the database
-  const isValid = validateProgram(id, state);
-  if (!isValid) {
-    console.log("Invalid program data");
-    const error = new HttpError(
-      "Invalid data is send! Please try again later!",
-      422
-    );
-    return next(error);
-  }
-
-  const newProgram = { id, state };
+  const { id, initData, initState } = req.body;
 
   // Get User
   let user;
   try {
     user = await User.findById(req.userData.userId);
     if (!user) {
-      throw "User not found";
+      throw 'User not found';
     }
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Adding the program failed! Please try again later!",
+      'Adding the program failed! Please try again later!',
       500
     );
     return next(error);
@@ -100,10 +90,36 @@ exports.add = async (req, res, next) => {
   // Make sure the program is not added
   const existingProgram = user.activePrograms.find((pr) => pr.id === id);
   if (existingProgram) {
-    console.log("The program already exists");
-    const error = new HttpError("The user is allready doing this proram!", 422);
+    console.log('The program already exists');
+    const error = new HttpError(
+      'The user is allready doing this program!',
+      422
+    );
     return next(error);
   }
+
+  // Get selected program
+  if (!programs.has(id)) {
+    console.log('Invalid program id');
+    const error = new HttpError('Invalid program id!', 422);
+    return next(error);
+  }
+  const program = programs.get(id);
+
+  // Generate initState for program
+  const gInitState = program.getInitData(initData);
+
+  // Compare passed initState, to generated initState
+  const areEqual = eqStates(initState, gInitState);
+  if (!areEqual) {
+    console.log('Invalid InitState passed');
+    const error = new HttpError('Invalid data!', 422);
+    return next(error);
+  }
+
+  // Add newProgram to User
+  const initVersion = rand();
+  const newProgram = { id, state: initState, version: initVersion };
 
   // Add program to user
   user.activePrograms.push(newProgram);
@@ -112,14 +128,26 @@ exports.add = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Adding the program failed! Please try again later!",
+      'Adding the program failed! Please try again later!',
       500
     );
     return next(error);
   }
 
   // Return new program
-  res.json(newProgram);
+  let hashedVersion;
+  try {
+    hashedVersion = await hashValue(initVersion);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      'Adding the program failed! Please try again later!',
+      500
+    );
+    return next(error);
+  }
+
+  res.json({ confirmed: true, nextVersion: hashedVersion });
 };
 
 // Delete specific program
@@ -134,7 +162,7 @@ exports.remove = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot remove program! Please try again later!",
+      'Cannot remove program! Please try again later!',
       500
     );
     return next(error);
@@ -156,7 +184,7 @@ exports.remove = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot remove program! Please try again later!",
+      'Cannot remove program! Please try again later!',
       500
     );
     return next(error);
@@ -176,9 +204,9 @@ exports.update = async (req, res, next) => {
   // Validate program
   const isValid = validateProgram(updatedProgram.id, updatedProgram.state);
   if (!isValid) {
-    console.log("Invalid program data");
+    console.log('Invalid program data');
     const error = new HttpError(
-      "Invalid data is send! Please try again later!",
+      'Invalid data is send! Please try again later!',
       422
     );
     return next(error);
@@ -191,7 +219,7 @@ exports.update = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot update program! Please try again later!",
+      'Cannot update program! Please try again later!',
       500
     );
     return next(error);
@@ -211,7 +239,7 @@ exports.update = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     const error = new HttpError(
-      "Cannot update program! Please try again later!",
+      'Cannot update program! Please try again later!',
       500
     );
     return next(error);
