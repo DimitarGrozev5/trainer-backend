@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/app.js",
-    "dev": "nodemon ./src/app.js",
-    "deploy": "git push heroku main"
+    "dev": "tsc -w | nodemon ./src/app.js",
+    "deploy": "tsc && git push heroku main"
   },
   "repository": {
     "type": "git",
