@@ -1,6 +1,6 @@
-const BlacklistedJWT = require("../models/BlacklistedJWT");
+import BlacklistedJWT from "../models/BlacklistedJWT.js";
 
-exports.deleteExpiredJWTs = async () => {
+export const deleteExpiredJWTs = async () => {
   const now = +new Date();
   await BlacklistedJWT.deleteMany({ expiresBy: { $lt: now } });
 };

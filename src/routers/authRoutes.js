@@ -1,19 +1,19 @@
-const express = require("express");
-const { check } = require("express-validator");
+import express from 'express';
+import { check } from 'express-validator';
 
-const { isAuth } = require("../middlewares/authMiddleware");
-const authController = require("../controllers/authController");
+import { isAuth } from '../middlewares/authMiddleware.js';
+import * as authController from '../controllers/authController.js';
 
 const router = express.Router();
 
 router.post(
-  "/register",
-  check("email").normalizeEmail().isEmail(),
-  check("password").isLength({ min: 6 }),
+  '/register',
+  check('email').normalizeEmail().isEmail(),
+  check('password').isLength({ min: 6 }),
   authController.register
 );
-router.post("/login", authController.login);
-router.post("/:userId/refresh", isAuth, authController.refreshToken);
-router.post("/:userId/logout", isAuth, authController.logout);
+router.post('/login', authController.login);
+router.post('/:userId/refresh', isAuth, authController.refreshToken);
+router.post('/:userId/logout', isAuth, authController.logout);
 
-module.exports = router;
+export default router;

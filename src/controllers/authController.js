@@ -1,12 +1,12 @@
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import { validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-const HttpError = require("../models/HttpError");
-const User = require("../models/User");
-const {saveTokenToBlacklist} = require("./helpers/save-token-to-blacklist")
+import HttpError from '../models/HttpError.js';
+import User from '../models/User.js';
+import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist.js';
 
-exports.register = async (req, res, next) => {
+export const register = async (req, res, next) => {
   // Get post data
   const { email, password } = req.body;
 
@@ -14,7 +14,7 @@ exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    return next(new HttpError("Invalid input! ", 422));
+    return next(new HttpError('Invalid input! ', 422));
   }
 
   // Check if user exists
@@ -23,7 +23,7 @@ exports.register = async (req, res, next) => {
     existingUser = await User.findOne({ email });
   } catch (err) {
     const error = new HttpError(
-      "Registration failed! Please try again later!",
+      'Registration failed! Please try again later!',
       500
     );
     console.log(err);
@@ -31,7 +31,7 @@ exports.register = async (req, res, next) => {
   }
 
   if (existingUser) {
-    const error = new HttpError("Such an user already exists!", 422);
+    const error = new HttpError('Such an user already exists!', 422);
     return next(error);
   }
 
@@ -40,7 +40,7 @@ exports.register = async (req, res, next) => {
   try {
     passwordHash = await bcrypt.hash(password, 12);
   } catch (err) {
-    const error = new HttpError("Registration failed! Please try again!", 500);
+    const error = new HttpError('Registration failed! Please try again!', 500);
     console.log(err);
     return next(error);
   }
@@ -56,7 +56,7 @@ exports.register = async (req, res, next) => {
     await newUser.save();
   } catch (err) {
     const error = new HttpError(
-      "Registration failed! Please try again later!",
+      'Registration failed! Please try again later!',
       500
     );
     console.log(err);
@@ -67,11 +67,11 @@ exports.register = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign({ userId: newUser._id }, process.env.jwtKey, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
   } catch (err) {
     const error = new HttpError(
-      "The user is created but login failed! Try to login again!",
+      'The user is created but login failed! Try to login again!',
       511
     );
     console.log(err);
@@ -85,7 +85,7 @@ exports.register = async (req, res, next) => {
   });
 };
 
-exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   // Get post data
   const { email, password } = req.body;
 
@@ -95,7 +95,7 @@ exports.login = async (req, res, next) => {
     targetUser = await User.findOne({ email });
   } catch (err) {
     const error = new HttpError(
-      "Registration failed! Please try again later!",
+      'Registration failed! Please try again later!',
       500
     );
     console.log(err);
@@ -103,7 +103,7 @@ exports.login = async (req, res, next) => {
   }
 
   if (!targetUser) {
-    const error = new HttpError("Wrong email or password!", 422);
+    const error = new HttpError('Wrong email or password!', 422);
     return next(error);
   }
 
@@ -112,13 +112,13 @@ exports.login = async (req, res, next) => {
   try {
     isValidPassword = await bcrypt.compare(password, targetUser.password);
   } catch (err) {
-    const error = new HttpError("Login failed! Please try again!", 500);
+    const error = new HttpError('Login failed! Please try again!', 500);
     console.log(err);
     return next(error);
   }
 
   if (!isValidPassword) {
-    const error = new HttpError("Wrong email or password!", 422);
+    const error = new HttpError('Wrong email or password!', 422);
     return next(error);
   }
 
@@ -126,10 +126,10 @@ exports.login = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign({ userId: targetUser._id }, process.env.jwtKey, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
   } catch (err) {
-    const error = new HttpError("Login failed! Please try again!", 500);
+    const error = new HttpError('Login failed! Please try again!', 500);
     console.log(err);
     return next(error);
   }
@@ -141,7 +141,7 @@ exports.login = async (req, res, next) => {
   });
 };
 
-exports.refreshToken = async (req, res, next) => {
+export const refreshToken = async (req, res, next) => {
   // The Route is guarded, so we can be sure that the token is valid and not blacklisted
 
   // Get data
@@ -152,10 +152,10 @@ exports.refreshToken = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign({ userId }, process.env.jwtKey, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
   } catch (err) {
-    const error = new HttpError("Token refresh failed! Try again later", 500);
+    const error = new HttpError('Token refresh failed! Try again later', 500);
     console.log(err);
     return next(error);
   }
@@ -173,7 +173,7 @@ exports.refreshToken = async (req, res, next) => {
   }
 };
 
-exports.logout = async (req, res, next) => {
+export const logout = async (req, res, next) => {
   // Get post data
   const token = req.headers.authorization;
 
@@ -186,6 +186,6 @@ exports.logout = async (req, res, next) => {
 
   // Return success
   res.json({
-    message: "Success",
+    message: 'Success',
   });
 };

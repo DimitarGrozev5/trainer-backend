@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node ./src/app.js",
-    "dev": "nodemon ./src/app.js",
-    "deploy": "git push heroku main"
+    "dev": "tsc -w | nodemon ./src/app.js",
+    "deploy": "tsc && git push heroku main"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/DimitarGrozev5/trainer-backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "date-fns": "^2.29.3",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",

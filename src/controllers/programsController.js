@@ -1,13 +1,13 @@
-const HttpError = require('../models/HttpError');
-const User = require('../models/User');
-const { programs, eqStates } = require('../programs');
-const { hashValue, validateHash } = require('../services/hashService');
-const { rand, nextRand } = require('../services/randomService');
-const { validateProgram } = require('../utils/validate-program');
+import HttpError from '../models/HttpError.js';
+import User from '../models/User.js';
+import { programs, eqStates } from '../programs/index.js';
+import { hashValue, validateHash } from '../services/hashService.js';
+import { rand, nextRand } from '../services/randomService.js';
+import { validateProgram } from '../utils/validate-program.js';
 
 // TODO: If a program is late, change it's sessionDate to today
 // Get all programs for user
-exports.getAll = async (req, res, next) => {
+export const getAll = async (req, res, next) => {
   let user;
   try {
     user = await User.findById(req.userData.userId);
@@ -50,7 +50,7 @@ const getSpecificProgram = async (userId, programId) => {
   return { id: program.id, state: program.state, version };
 };
 
-exports.get = async (req, res, next) => {
+export const get = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
 
@@ -79,7 +79,7 @@ exports.get = async (req, res, next) => {
 };
 
 // Start doing a specific program
-exports.add = async (req, res, next) => {
+export const add = async (req, res, next) => {
   // Get program
   const { id, initData, initState } = req.body;
 
@@ -163,7 +163,7 @@ exports.add = async (req, res, next) => {
 };
 
 // Delete specific program
-exports.remove = async (req, res, next) => {
+export const remove = async (req, res, next) => {
   // Get program id and version
   const programId = req.params.programId;
   const { version } = req.body;
@@ -225,7 +225,7 @@ exports.remove = async (req, res, next) => {
 };
 
 // Update a specific program
-exports.update = async (req, res, next) => {
+export const update = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
   const { id, state, achieved, version } = req.body;

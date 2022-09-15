@@ -1,24 +1,22 @@
-const express = require("express");
-const mongoose = require("mongoose");
+import express from 'express';
+import mongoose from 'mongoose';
 
-const HttpError = require("./models/HttpError");
-const authRouter = require("./routers/authRoutes");
-const programsRoutes = require("./routers/programsRoutes");
-const { errorHandler } = require("./controllers/errorHandler");
-const {
-  deleteExpiredJWTs,
-} = require("./tasks/deleteExpiredBlacklistedJWTsTask");
+import HttpError from './models/HttpError.js';
+import authRouter from './routers/authRoutes.js';
+import programsRoutes from './routers/programsRoutes.js';
+import { errorHandler } from './controllers/errorHandler.js';
+import { deleteExpiredJWTs } from './tasks/deleteExpiredBlacklistedJWTsTask.js';
 
 const app = express();
 
 // Set up cors headers
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
 
   next();
 });
@@ -27,12 +25,12 @@ app.use((req, res, next) => {
 app.use(express.json({ extended: false }));
 
 // Setup routes
-app.use("/api/users", authRouter); // Auth routes
-app.use("/api/users/:userId", programsRoutes); // Programs Routes
+app.use('/api/users', authRouter); // Auth routes
+app.use('/api/users/:userId', programsRoutes); // Programs Routes
 
 // 404 route
 app.use((req, res, next) => {
-  return next(new HttpError("Could not find this route!", 404));
+  return next(new HttpError('Could not find this route!', 404));
 });
 
 // Global error handler
@@ -42,13 +40,13 @@ app.use(errorHandler);
 mongoose
   .connect(process.env.mongoUrl)
   .then(() => {
-    console.log("Connected to DB");
+    console.log('Connected to DB');
     app.listen(process.env.PORT, async () => {
       // Delete expired JWTs on startup
       try {
         await deleteExpiredJWTs();
       } catch (err) {
-        console.log("Could not delete expired blacklisted JWTs: " + err);
+        console.log('Could not delete expired blacklisted JWTs: ' + err);
       }
 
       console.log(`Server is running on port ${process.env.PORT}`);

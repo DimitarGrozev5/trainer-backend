@@ -1,13 +1,13 @@
-const HttpError = require("../models/HttpError");
-const { saveTokenToBlacklist } = require("./helpers/save-token-to-blacklist");
+import HttpError from '../models/HttpError.js';
+import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist.js';
 
-exports.errorHandler = async (error, req, res, next) => {
+export const errorHandler = async (error, req, res, next) => {
   if (res.headerSend) {
     return next();
   }
 
   res.status(error.code || 500);
-  res.json({ message: error.message || "An unknown error occured!" });
+  res.json({ message: error.message || 'An unknown error occured!' });
 
   if (error.code === 401 && req.userData) {
     try {
@@ -18,4 +18,4 @@ exports.errorHandler = async (error, req, res, next) => {
   }
 };
 
-exports.error500 = new HttpError("Възникна грешка! Моля опитайте отново!", 500);
+export const error500 = new HttpError('Възникна грешка! Моля опитайте отново!', 500);
