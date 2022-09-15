@@ -1,8 +1,7 @@
 import express from 'express';
 
-// import { isAuth } from "../middlewares/authMiddleware";
-import programsController from '../controllers/programsController';
-import { isAuth } from '../middlewares/authMiddleware';
+import programsController from '../controllers/programsController.js';
+import { isAuth } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 

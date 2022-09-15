@@ -1,4 +1,4 @@
-import BlacklistedJWT from "../models/BlacklistedJWT";
+import BlacklistedJWT from "../models/BlacklistedJWT.js";
 
 export const deleteExpiredJWTs = async () => {
   const now = +new Date();

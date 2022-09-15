@@ -1,5 +1,5 @@
-const ees = require('./ees/even-easier-strength');
-const EnduroGrip = require('./enduro-grip/enduro-grip');
+import ees from './ees/even-easier-strength.js';
+import EnduroGrip from './enduro-grip/enduro-grip.js';
 
 // Store valid program ids
 const validIds = ['ees', 'EnduroGrip'];

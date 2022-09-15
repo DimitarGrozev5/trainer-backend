@@ -2,9 +2,9 @@ import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import HttpError from '../models/HttpError';
-import User from '../models/User';
-import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist';
+import HttpError from '../models/HttpError.js';
+import User from '../models/User.js';
+import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist.js';
 
 export const register = async (req, res, next) => {
   // Get post data

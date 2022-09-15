@@ -1,11 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
-import HttpError from './models/HttpError';
-import authRouter from './routers/authRoutes';
-import programsRoutes from './routers/programsRoutes';
-import { errorHandler } from './controllers/errorHandler';
-import { deleteExpiredJWTs } from './tasks/deleteExpiredBlacklistedJWTsTask';
+import HttpError from './models/HttpError.js';
+import authRouter from './routers/authRoutes.js';
+import programsRoutes from './routers/programsRoutes.js';
+import { errorHandler } from './controllers/errorHandler.js';
+import { deleteExpiredJWTs } from './tasks/deleteExpiredBlacklistedJWTsTask.js';
 
 const app = express();
 

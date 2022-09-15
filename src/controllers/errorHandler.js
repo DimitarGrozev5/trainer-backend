@@ -1,5 +1,5 @@
-import HttpError from '../models/HttpError';
-import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist';
+import HttpError from '../models/HttpError.js';
+import { saveTokenToBlacklist } from './helpers/save-token-to-blacklist.js';
 
 export const errorHandler = async (error, req, res, next) => {
   if (res.headerSend) {

@@ -1,13 +1,13 @@
-import jwt from "jsonwebtoken";
-import BlacklistedJWT from "../models/BlacklistedJWT";
+import jwt from 'jsonwebtoken';
 
-import HttpError from "../models/HttpError";
+import BlacklistedJWT from '../models/BlacklistedJWT.js';
+import HttpError from '../models/HttpError.js';
 
 export const isAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
     if (!token) {
-      throw "No value is passed to authorization header";
+      throw 'No value is passed to authorization header';
     }
 
     // Verify JWT
@@ -21,7 +21,7 @@ export const isAuth = async (req, res, next) => {
       console.log(err);
     }
     if (blacklistedToken) {
-      throw "Provided token is blacklisted";
+      throw 'Provided token is blacklisted';
     }
 
     // Decorate request
@@ -30,7 +30,7 @@ export const isAuth = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    const error = new HttpError("Authentication failed!", 401);
+    const error = new HttpError('Authentication failed!', 401);
     return next(error);
   }
 };
