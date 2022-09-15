@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from 'jsonwebtoken';
 
-const HttpError = require("../../models/HttpError");
-const BlacklistedJWT = require("../../models/BlacklistedJWT");
+import HttpError from '../../models/HttpError';
+import BlacklistedJWT from '../../models/BlacklistedJWT';
 
 exports.saveTokenToBlacklist = async (token) => {
   // Check if token is in the blacklist
@@ -10,7 +10,7 @@ exports.saveTokenToBlacklist = async (token) => {
     existingToken = await BlacklistedJWT.findOne({ token });
   } catch (err) {
     console.log(err);
-    const error = new HttpError("Logout failed! Please try again later!", 500);
+    const error = new HttpError('Logout failed! Please try again later!', 500);
     throw error;
   }
 
@@ -25,7 +25,7 @@ exports.saveTokenToBlacklist = async (token) => {
     const decodedToken = jwt.verify(token, process.env.jwtKey);
     expiresBy = decodedToken.exp * 1000;
   } catch (err) {
-    const error = new HttpError("Internal server error!", 401);
+    const error = new HttpError('Internal server error!', 401);
     throw error;
   }
 
@@ -34,7 +34,7 @@ exports.saveTokenToBlacklist = async (token) => {
   try {
     await newBlacklistToken.save();
   } catch (err) {
-    const error = new HttpError("Logout failed! Please try again later!", 500);
+    const error = new HttpError('Logout failed! Please try again later!', 500);
     throw error;
   }
 

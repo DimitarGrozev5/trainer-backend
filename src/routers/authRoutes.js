@@ -1,8 +1,8 @@
-const express = require("express");
-const { check } = require("express-validator");
+import express from "express";
+import { check } from "express-validator";
 
-const { isAuth } = require("../middlewares/authMiddleware");
-const authController = require("../controllers/authController");
+import { isAuth } from "../middlewares/authMiddleware";
+import authController from "../controllers/authController";
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.post("/login", authController.login);
 router.post("/:userId/refresh", isAuth, authController.refreshToken);
 router.post("/:userId/logout", isAuth, authController.logout);
 
-module.exports = router;
+export default router;

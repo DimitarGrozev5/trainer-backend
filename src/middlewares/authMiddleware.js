@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
-const BlacklistedJWT = require("../models/BlacklistedJWT");
+import jwt from "jsonwebtoken";
+import BlacklistedJWT from "../models/BlacklistedJWT";
 
-const HttpError = require("../models/HttpError");
+import HttpError from "../models/HttpError";
 
-exports.isAuth = async (req, res, next) => {
+export const isAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
     if (!token) {

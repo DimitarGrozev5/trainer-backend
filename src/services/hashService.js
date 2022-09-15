@@ -1,10 +1,10 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
-exports.hashValue = (val) => {
+export const hashValue = (val) => {
   return bcrypt.hash(val, 12);
 };
 
-exports.validateHash = async (val, hash) => {
+export const validateHash = async (val, hash) => {
   // Validate password
   let isValidPassword = false;
   try {
