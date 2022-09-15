@@ -1,6 +1,6 @@
 import HttpError from '../models/HttpError.js';
 import User from '../models/User.js';
-import { programs, eqStates } from '../programs.js';
+import { programs, eqStates } from '../programs/index.js';
 import { hashValue, validateHash } from '../services/hashService.js';
 import { rand, nextRand } from '../services/randomService.js';
 import { validateProgram } from '../utils/validate-program.js';

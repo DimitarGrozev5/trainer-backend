@@ -1,6 +1,6 @@
 import express from 'express';
 
-import programsController from '../controllers/programsController.js';
+import * as programsController from '../controllers/programsController.js';
 import { isAuth } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();

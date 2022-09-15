@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.last = exports.CircularArray = exports.eqArr = exports.addToArr = exports.getArr = void 0;
-const getArr = (size, contents) => {
+export const getArr = (size, contents) => {
     if (size < 0) {
         throw new Error('size must be a positive number');
     }
@@ -11,27 +8,24 @@ const getArr = (size, contents) => {
     }
     return a;
 };
-exports.getArr = getArr;
-const addToArr = (arr, toSize, contents) => {
+export const addToArr = (arr, toSize, contents) => {
     const dt = toSize - arr.length;
     if (dt < 0) {
         throw new Error('toSize must be greather than the size of the array');
     }
-    const a = (0, exports.getArr)(dt, contents);
+    const a = getArr(dt, contents);
     return [...arr, ...a];
 };
-exports.addToArr = addToArr;
 // Function that copares two arrays and makes sure every element is equal between them
 // Will fail if elements are objects
-const eqArr = (a, b) => {
+export const eqArr = (a, b) => {
     return (Array.isArray(a) &&
         Array.isArray(b) &&
         a.length === b.length &&
         a.every((val, index) => val === b[index]));
 };
-exports.eqArr = eqArr;
 // Datatype to rotate around an array
-class CircularArray {
+export class CircularArray {
     constructor(arr, startingIndex) {
         if (!arr.length) {
             throw new Error('array is empty');
@@ -61,7 +55,5 @@ class CircularArray {
         return i % this.arr.length;
     }
 }
-exports.CircularArray = CircularArray;
 // Get last element of array
-const last = (arr) => arr[arr.length - 1];
-exports.last = last;
+export const last = (arr) => arr[arr.length - 1];

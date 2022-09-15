@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMonthArr = exports.sameMonth = exports.sameDate = exports.now = exports.roundDate = exports.lz = exports.getWeekDayShortName = exports.getMonthName = void 0;
-const date_fns_1 = require("date-fns");
+import { add } from "date-fns";
 // Get month name
-const getMonthName = (date) => {
+export const getMonthName = (date) => {
     return [
         "January",
         "February",
@@ -19,16 +16,13 @@ const getMonthName = (date) => {
         "December",
     ][date.getMonth()];
 };
-exports.getMonthName = getMonthName;
-const getWeekDayShortName = (day) => ["Mon", "Thu", "Thi", "Wed", "Fri", "Sat", "Sun"][day % 7];
-exports.getWeekDayShortName = getWeekDayShortName;
+export const getWeekDayShortName = (day) => ["Mon", "Thu", "Thi", "Wed", "Fri", "Sat", "Sun"][day % 7];
 // Function to add leading zeroes
-const lz = (num, length = 2) => {
+export const lz = (num, length = 2) => {
     return (100000 + num).toString().substring(6 - length);
 };
-exports.lz = lz;
 // Remove hours minutes and seconds from Date
-const roundDate = (date, to = "hours") => {
+export const roundDate = (date, to = "hours") => {
     const d = new Date(date);
     switch (to) {
         // @ts-ignore
@@ -48,23 +42,19 @@ const roundDate = (date, to = "hours") => {
     }
     return d;
 };
-exports.roundDate = roundDate;
 // Get today, rounded to hours
-const now = () => (0, exports.roundDate)(new Date());
-exports.now = now;
+export const now = () => roundDate(new Date());
 // Check if two dates are the same, ignoring hours, minutes, seconds and miliseconds
-const sameDate = (date1, date2) => {
+export const sameDate = (date1, date2) => {
     return (date1.getFullYear() === date2.getFullYear() &&
         date1.getMonth() === date2.getMonth() &&
         date1.getDate() === date2.getDate());
 };
-exports.sameDate = sameDate;
 // Check if two dates are in the same month
-const sameMonth = (date1, date2) => {
+export const sameMonth = (date1, date2) => {
     return (date1.getFullYear() === date2.getFullYear() &&
         date1.getMonth() === date2.getMonth());
 };
-exports.sameMonth = sameMonth;
 const nextDaysMonth = (arr) => {
     const last = arr.length;
     if (!last) {
@@ -75,12 +65,12 @@ const nextDaysMonth = (arr) => {
         return -1;
     }
     const today = arr[last - 1][lastValLen - 1];
-    const nextDay = (0, date_fns_1.add)(today, { days: 1 });
+    const nextDay = add(today, { days: 1 });
     return today.getMonth() === 11 && nextDay.getMonth() === 0
         ? 12
         : nextDay.getMonth();
 };
-const getMonthArr = (date, { getNumOfWeeks = 6, skipDaysFromOtherMonths = false } = {}) => {
+export const getMonthArr = (date, { getNumOfWeeks = 6, skipDaysFromOtherMonths = false } = {}) => {
     // Get current month
     const currentMonth = date.getMonth();
     // Get first day of month
@@ -108,4 +98,3 @@ const getMonthArr = (date, { getNumOfWeeks = 6, skipDaysFromOtherMonths = false 
     }
     return month;
 };
-exports.getMonthArr = getMonthArr;

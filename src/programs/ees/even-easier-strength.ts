@@ -1,8 +1,9 @@
 import { add } from 'date-fns';
-import { roundDate, now } from '../../utils/date';
-import { eesAchieved, eesState } from './ees-types';
 
-module.exports = {
+import { roundDate, now } from '../../utils/date.js';
+import { eesAchieved, eesState } from './ees-types.js';
+
+export default {
   valiateInitData: () => true,
   getInitData: (): eesState => {
     const now = roundDate(new Date());

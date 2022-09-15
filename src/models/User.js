@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
+import uniqueValidator from 'mongoose-unique-validator';
 
-import uniqueValidator from 'mongoose-unique-validator.js';
 import { validIds } from '../programs/index.js';
 
 const Schema = mongoose.Schema;

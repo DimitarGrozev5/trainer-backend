@@ -2,23 +2,20 @@ import ees from './ees/even-easier-strength.js';
 import EnduroGrip from './enduro-grip/enduro-grip.js';
 
 // Store valid program ids
-const validIds = ['ees', 'EnduroGrip'];
-exports.validIds = validIds;
+export const validIds = ['ees', 'EnduroGrip'];
 
 // Setup programs map
-const programs = new Map();
+export const programs = new Map();
 
 programs.set('ees', ees);
 programs.set('EnduroGrip', EnduroGrip);
-
-exports.programs = programs;
 
 // Helper function for comparing states
 const isObject = (object) => {
   return object != null && typeof object === 'object';
 };
 
-const isDeepEqual = (state1, state2) => {
+export const eqStates = (state1, state2) => {
   const objKeys1 = Object.keys(state1).filter((key) => key !== 'sessionDate');
   const objKeys2 = Object.keys(state2).filter((key) => key !== 'sessionDate');
 
@@ -31,7 +28,7 @@ const isDeepEqual = (state1, state2) => {
     const isObjects = isObject(value1) && isObject(value2);
 
     if (
-      (isObjects && !isDeepEqual(value1, value2)) ||
+      (isObjects && !eqStates(value1, value2)) ||
       (!isObjects && value1 !== value2)
     ) {
       return false;
@@ -39,5 +36,3 @@ const isDeepEqual = (state1, state2) => {
   }
   return true;
 };
-
-exports.eqStates = isDeepEqual;

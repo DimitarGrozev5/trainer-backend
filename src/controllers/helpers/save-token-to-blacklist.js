@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import HttpError from '../../models/HttpError.js';
 import BlacklistedJWT from '../../models/BlacklistedJWT.js';
 
-exports.saveTokenToBlacklist = async (token) => {
+export const saveTokenToBlacklist = async (token) => {
   // Check if token is in the blacklist
   let existingToken;
   try {

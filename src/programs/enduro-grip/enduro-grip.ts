@@ -1,15 +1,16 @@
 import { add } from 'date-fns';
-import { CircularArray } from '../../utils/array';
-import { roundDate } from '../../utils/date';
+
+import { CircularArray } from '../../utils/array.js';
+import { roundDate } from '../../utils/date.js';
 import {
   EnduroGripAchieved,
   EnduroGripInit,
   EnduroGripState,
-} from './enduro-grip-types';
+} from './enduro-grip-types.js';
 
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 
-module.exports = {
+const EnduroGrip = {
   valiateInitData: ({ startDate, schedule }: EnduroGripInit): boolean => {
     // Check if date is number and converts to date
     if (Number.isNaN(Number(startDate))) {
@@ -142,3 +143,5 @@ module.exports = {
     };
   },
 };
+
+export default EnduroGrip;

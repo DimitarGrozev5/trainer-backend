@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const date_fns_1 = require("date-fns");
-const array_1 = require("../../utils/array");
-const date_1 = require("../../utils/date");
+import { add } from 'date-fns';
+import { CircularArray } from '../../utils/array.js';
+import { roundDate } from '../../utils/date.js';
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
-module.exports = {
+const EnduroGrip = {
     valiateInitData: ({ startDate, schedule }) => {
         // Check if date is number and converts to date
         if (Number.isNaN(Number(startDate))) {
@@ -63,18 +61,18 @@ module.exports = {
         // Convert sessionDate to Date object
         const sessionDate = new Date(sessionDateUtc);
         // Convert schedule to CircularArray
-        const schedulePlan = new array_1.CircularArray(schedule, currentScheduleIndex);
+        const schedulePlan = new CircularArray(schedule, currentScheduleIndex);
         // Select the base date
         const fromDate = skip ? sessionDate : new Date();
         // Calculate next session date
-        const nextSessionDate = (0, date_1.roundDate)((0, date_fns_1.add)(fromDate, { days: schedulePlan.i(0) }));
+        const nextSessionDate = roundDate(add(fromDate, { days: schedulePlan.i(0) }));
         // Calculate next schedule index
         const nextScheduleIndex = schedulePlan.getIndex(+1);
         /// Calculate next session params
         // Extract achived sets and fallback to lastHeavySessionAchieved if *skip*
         const sets = skip ? lastHeavySessionAchieved : achieved.sets;
         // Convert training rotation to CircularArray
-        const trainingPlan = new array_1.CircularArray(trainingRotation, sessionIndex);
+        const trainingPlan = new CircularArray(trainingRotation, sessionIndex);
         // Set variables
         let nextSessionIndex = sessionIndex;
         let heavySessionAchieved = sets;
@@ -103,3 +101,4 @@ module.exports = {
         };
     },
 };
+export default EnduroGrip;

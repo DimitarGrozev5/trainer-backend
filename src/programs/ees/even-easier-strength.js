@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const date_fns_1 = require("date-fns");
-const date_1 = require("../../utils/date");
-module.exports = {
+import { add } from 'date-fns';
+import { roundDate, now } from '../../utils/date.js';
+export default {
     valiateInitData: () => true,
     getInitData: () => {
-        const now = (0, date_1.roundDate)(new Date());
+        const now = roundDate(new Date());
         return {
             sessionDate: now.getTime(),
             setsDone: {
@@ -66,12 +64,12 @@ module.exports = {
         // Convert sessionDate to Date object
         const sessionDate = new Date(UTCDate);
         // If *skip* calcualte next date based on last session date
-        const cDate = skip ? sessionDate : (0, date_1.now)();
+        const cDate = skip ? sessionDate : now();
         // Set nextSessionDate to current session date
         let nextSessionDate = sessionDate;
         // If the required sets are achieved or *skip*, move to the next date
         if (allSets === 10 || skip) {
-            nextSessionDate = (0, date_fns_1.add)(cDate, { days: 1 });
+            nextSessionDate = add(cDate, { days: 1 });
         }
         // Set the sets
         let setsDone = {
