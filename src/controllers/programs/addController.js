@@ -14,7 +14,6 @@ export const add = async (req, res, next) => {
 
   // Make sure the program is not added
   const existingProgram = req.userData.targetProgram;
-  
   if (existingProgram) {
     console.log('The program already exists');
     const error = new HttpError(
