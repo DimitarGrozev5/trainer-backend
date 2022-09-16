@@ -27,7 +27,7 @@ export default {
       return 'skip';
     }
 
-    const achived = new eesAchieved(
+    const achieved = new eesAchieved(
       achievedRaw.push,
       achievedRaw.pull,
       achievedRaw.squat,
@@ -35,11 +35,12 @@ export default {
       achievedRaw.accessory
     );
 
-    return validate(achived).then((errors) => {
+    return validate(achieved).then((errors) => {
       if (errors.length > 0) {
+        // console.log(errors);
         return false;
       }
-      return achived;
+      return achieved;
     });
   },
   getNextState: (state: eesState, achieved: eesAchieved | 'skip'): eesState => {

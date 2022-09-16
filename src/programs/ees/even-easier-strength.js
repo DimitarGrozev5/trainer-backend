@@ -21,12 +21,13 @@ export default {
         if (achievedRaw === 'skip') {
             return 'skip';
         }
-        const achived = new eesAchieved(achievedRaw.push, achievedRaw.pull, achievedRaw.squat, achievedRaw.ab, achievedRaw.accessory);
-        return validate(achived).then((errors) => {
+        const achieved = new eesAchieved(achievedRaw.push, achievedRaw.pull, achievedRaw.squat, achievedRaw.ab, achievedRaw.accessory);
+        return validate(achieved).then((errors) => {
             if (errors.length > 0) {
+                // console.log(errors);
                 return false;
             }
-            return achived;
+            return achieved;
         });
     },
     getNextState: (state, achieved) => {

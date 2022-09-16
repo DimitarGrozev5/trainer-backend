@@ -118,7 +118,13 @@ export const add = async (req, res, next) => {
   const program = programs.get(id);
 
   // Generate initState for program
-  const gInitState = program.getInitData(initData);
+  const tInitData = await program.transformInitData(initData);
+  if (!tInitData) {
+    console.log('Invalid init data');
+    const error = new HttpError('Invalid init data!', 422);
+    return next(error);
+  }
+  const gInitState = program.getInitData(tInitData);
 
   // Compare passed initState, to generated initState
   const areEqual = eqStates(initState, gInitState);
@@ -262,18 +268,23 @@ export const update = async (req, res, next) => {
     return next(error);
   }
 
-  // Generate next State for program// Get selected program
+  // Generate next State for program
   if (!programs.has(id)) {
     console.log('Invalid program id');
     const error = new HttpError('Invalid program id!', 422);
     return next(error);
   }
   const program = programs.get(id);
-  const gState = program.getNextState(programData.state, achieved, {
-    forceProgress: achieved.forced,
-  });
 
-  // Compare passed initState, to generated initState
+  const tAchieved = await program.transformAchievedData(achieved);
+  if (!tAchieved) {
+    console.log('Invalid achieved data');
+    const error = new HttpError('Invalid achieved data!', 422);
+    return next(error);
+  }
+  const gState = program.getNextState(programData.state, tAchieved);
+
+  // Compare passed State, to generated State
   const areEqual = eqStates(state, gState);
   if (!areEqual) {
     console.log('Invalid state passed');
