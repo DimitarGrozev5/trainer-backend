@@ -1,7 +1,8 @@
+import bcrypt from 'bcrypt';
+
 import HttpError from '../../models/HttpError.js';
-import { programs, eqStates } from '../../programs/index.js';
-import { hashValue } from '../../services/hashService.js';
-import { rand } from '../../services/randomService.js';
+import { eqStates } from '../../programs/index.js';
+import { getSalt, hashValue } from '../../services/hashService.js';
 
 // Start doing a specific program
 export const add = async (req, res, next) => {
@@ -43,8 +44,8 @@ export const add = async (req, res, next) => {
   }
 
   // Add newProgram to User
-  const initVersion = rand();
-  const newProgram = { id, state: initState, version: initVersion };
+  const salt = await getSalt();
+  const newProgram = { id, state: initState, salt };
 
   // Add program to user
   user.activePrograms.push(newProgram);
@@ -58,6 +59,8 @@ export const add = async (req, res, next) => {
     );
     return next(error);
   }
+
+  ///////////////////////////////////////////////////////////////////////// Refactored to here
 
   // Return new program
   let hashedVersion;

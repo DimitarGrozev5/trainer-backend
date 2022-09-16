@@ -16,18 +16,6 @@ export const update = async (req, res, next) => {
   // Find program by programId
   const programData = req.userData.targetProgram;
 
-  // Validate version
-  const actualVersion = programData.version.toString();
-  const isValid = await validateHash(actualVersion, version);
-  if (!isValid) {
-    console.log("versions don't match");
-    const error = new HttpError(
-      'Your data is not up to date! Please reload your page!',
-      410
-    );
-    return next(error);
-  }
-
   // Generate next State for program
   const program = req.userData.targetProgramMethods;
 

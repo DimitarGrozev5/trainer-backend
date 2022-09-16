@@ -9,6 +9,7 @@ import { isAuth } from '../middlewares/authMiddleware.js';
 import { getUser } from '../middlewares/getUserMiddleware.js';
 import { getProgram } from '../middlewares/getProgram.js';
 import { getProgramMethods } from '../middlewares/getProgramMethods.js';
+import { validateVersion } from '../middlewares/validateVersion.js';
 
 const router = express.Router();
 
@@ -40,6 +41,7 @@ router.delete(
   isAuth,
   getUser,
   getProgram({ fromParams: true }),
+  validateVersion,
   remove
 );
 
@@ -49,6 +51,7 @@ router.patch(
   isAuth,
   getUser,
   getProgram({ fromParams: true }),
+  validateVersion,
   getProgramMethods,
   update
 );
