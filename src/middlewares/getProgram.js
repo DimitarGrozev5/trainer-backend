@@ -2,7 +2,7 @@ export const getProgram =
   ({ fromParams = true, fromBody = false, exitIfMissing = true } = {}) =>
   async (req, res, next) => {
     // Get id
-    let id = null;
+    let id = undefined;
     if (fromParams) {
       id = req.params.programId;
     }
@@ -11,7 +11,7 @@ export const getProgram =
     }
 
     // If id is null or undefined throw error
-    if (id ?? true) {
+    if (id === undefined) {
       console.log('ID not provided');
       const error = new HttpError('No id provided!', 422);
       return next(error);
