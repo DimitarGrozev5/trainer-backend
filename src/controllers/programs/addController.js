@@ -10,20 +10,7 @@ export const add = async (req, res, next) => {
   const { id, initData, initState } = req.body;
 
   // Get User
-  let user;
-  try {
-    user = await User.findById(req.userData.userId);
-    if (!user) {
-      throw 'User not found';
-    }
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError(
-      'Adding the program failed! Please try again later!',
-      500
-    );
-    return next(error);
-  }
+  const user = req.userData.User;
 
   // Make sure the program is not added
   const existingProgram = user.activePrograms.find((pr) => pr.id === id);

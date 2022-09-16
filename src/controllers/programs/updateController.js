@@ -11,17 +11,7 @@ export const update = async (req, res, next) => {
   const { id, state, achieved, version } = req.body;
 
   // Get user
-  let user;
-  try {
-    user = await User.findById(req.userData.userId);
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError(
-      'Cannot update program! Please try again later!',
-      500
-    );
-    return next(error);
-  }
+  const user = req.userData.User;
 
   // Find program by programId
   const programData = user.activePrograms.find((pr) => pr.id === id);

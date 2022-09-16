@@ -6,17 +6,8 @@ export const get = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
 
-  let user;
-  try {
-    user = await User.findById(req.userData.userId);
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError(
-      'Cannot fetch program! Please try again later!',
-      500
-    );
-    return next(error);
-  }
+  // Get user
+  const user = req.userData.User;
 
   const fullProgram = user.activePrograms.find((pr) => {
     return pr.id === programId;

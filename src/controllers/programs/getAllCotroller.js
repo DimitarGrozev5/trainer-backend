@@ -5,17 +5,7 @@ import { hashValue } from '../../services/hashService.js';
 // TODO: If a program is late, change it's sessionDate to today
 // Get all programs for user
 export const getAll = async (req, res, next) => {
-  let user;
-  try {
-    user = await User.findById(req.userData.userId);
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError(
-      'Cannot fetch programs! Please try again later!',
-      500
-    );
-    return next(error);
-  }
+  const user = req.userData.User;
 
   // Hash versions
   const activePrograms = await Promise.all(
