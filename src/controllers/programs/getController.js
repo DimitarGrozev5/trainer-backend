@@ -2,7 +2,10 @@ import bcrypt from 'bcrypt';
 
 import HttpError from '../../models/HttpError.js';
 import { hashValue } from '../../services/hashService.js';
-import { fromModel } from '../../services/program-transformer.js';
+import {
+  fromModel,
+  ProgramfromModel,
+} from '../../services/program-transformer.js';
 
 export const get = async (req, res, next) => {
   // Get program
@@ -17,15 +20,11 @@ export const get = async (req, res, next) => {
     return next(error);
   }
 
-  const salt = await bcrypt.genSalt(10);
-
-  const ver = await fromModel(fullProgram.id, fullProgram.state, salt);
-  console.log(ver);
-
-  // Hash version
-  const version = hashValue(fullProgram.version.toString());
-
-  const program = { id: fullProgram.id, state: fullProgram.state, version };
+  const program = await ProgramfromModel(
+    fullProgram.id,
+    fullProgram.state,
+    fullProgram.salt
+  );
 
   res.json(program);
 };

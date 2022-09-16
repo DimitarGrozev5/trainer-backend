@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-export const fromModel = async (id, state, salt) => {
+export const ProgramfromModel = async (id, state, salt) => {
   // Generate sting based on program state
   const hashableData = JSON.stringify({ id, state });
 
