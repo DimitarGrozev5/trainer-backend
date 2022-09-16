@@ -8,6 +8,7 @@ import { update } from '../controllers/programs/updateController.js';
 import { isAuth } from '../middlewares/authMiddleware.js';
 import { getUser } from '../middlewares/getUserMiddleware.js';
 import { getProgram } from '../middlewares/getProgram.js';
+import { getProgramMethods } from '../middlewares/getProgramMethods.js';
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post(
   isAuth,
   getUser,
   getProgram({ fromBody: true, exitIfMissing: false }),
+  getProgramMethods,
   add
 );
 
@@ -47,6 +49,7 @@ router.patch(
   isAuth,
   getUser,
   getProgram({ fromParams: true }),
+  getProgramMethods,
   update
 );
 

@@ -23,12 +23,7 @@ export const add = async (req, res, next) => {
   }
 
   // Get selected program
-  if (!programs.has(id)) {
-    console.log('Invalid program id');
-    const error = new HttpError('Invalid program id!', 422);
-    return next(error);
-  }
-  const program = programs.get(id);
+  const program = req.userData.targetProgramMethods;
 
   // Generate initState for program
   const tInitData = await program.transformInitData(initData);
