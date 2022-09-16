@@ -1,17 +1,9 @@
 import HttpError from '../../models/HttpError.js';
-import User from '../../models/User.js';
 import { hashValue } from '../../services/hashService.js';
 
 export const get = async (req, res, next) => {
-  // Get program id
-  const programId = req.params.programId;
-
-  // Get user
-  const user = req.userData.User;
-
-  const fullProgram = user.activePrograms.find((pr) => {
-    return pr.id === programId;
-  });
+  // Get program
+  const fullProgram = req.userData.targetProgram;
 
   if (!fullProgram) {
     console.log('Program not found!');

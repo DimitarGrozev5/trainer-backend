@@ -13,7 +13,8 @@ export const add = async (req, res, next) => {
   const user = req.userData.User;
 
   // Make sure the program is not added
-  const existingProgram = user.activePrograms.find((pr) => pr.id === id);
+  const existingProgram = req.userData.targetProgram;
+  
   if (existingProgram) {
     console.log('The program already exists');
     const error = new HttpError(

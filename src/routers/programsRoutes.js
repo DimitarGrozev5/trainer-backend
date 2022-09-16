@@ -7,6 +7,7 @@ import { remove } from '../controllers/programs/removeController.js';
 import { update } from '../controllers/programs/updateController.js';
 import { isAuth } from '../middlewares/authMiddleware.js';
 import { getUser } from '../middlewares/getUserMiddleware.js';
+import { getProgram } from '../middlewares/getProgram.js';
 
 const router = express.Router();
 
@@ -14,15 +15,39 @@ const router = express.Router();
 router.get('/', isAuth, getUser, getAll);
 
 // Start doing a specific workout
-router.post('/', isAuth, getUser, add);
+router.post(
+  '/',
+  isAuth,
+  getUser,
+  getProgram({ fromBody: true, exitIfMissing: false }),
+  add
+);
 
 // Get specific workout
-router.get('/:programId', isAuth, getUser, get);
+router.get(
+  '/:programId',
+  isAuth,
+  getUser,
+  getProgram({ fromParams: true }),
+  get
+);
 
 // Delete specific workout
-router.delete('/:programId', isAuth, getUser, remove);
+router.delete(
+  '/:programId',
+  isAuth,
+  getUser,
+  getProgram({ fromParams: true }),
+  remove
+);
 
 // Update a specific workout
-router.patch('/:programId', isAuth, getUser, update);
+router.patch(
+  '/:programId',
+  isAuth,
+  getUser,
+  getProgram({ fromParams: true }),
+  update
+);
 
 export default router;

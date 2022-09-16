@@ -4,20 +4,16 @@ import { validateHash } from '../../services/hashService.js';
 
 // Delete specific program
 export const remove = async (req, res, next) => {
-  // Get program id and version
-  const programId = req.params.programId;
+  // Get program version
   const { version } = req.body;
 
   // Get user
   const user = req.userData.User;
 
   // Find program by programId
-  const program = user.activePrograms.find((pr) => pr.id === programId);
-  if (!program) {
-    console.log('ID missing in active programs');
-    const error = new HttpError("This program isn't active!", 404);
-    return next(error);
-  }
+  const program = req.userData.targetProgram;
+
+  // Get actual version
   const actualVersion = program.version.toString();
 
   // Validate version

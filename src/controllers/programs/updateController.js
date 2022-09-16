@@ -14,12 +14,7 @@ export const update = async (req, res, next) => {
   const user = req.userData.User;
 
   // Find program by programId
-  const programData = user.activePrograms.find((pr) => pr.id === id);
-  if (!programData) {
-    console.log('ID missing in active programs');
-    const error = new HttpError("This program isn't active!", 404);
-    return next(error);
-  }
+  const programData = req.userData.targetProgram;
 
   // Validate version
   const actualVersion = programData.version.toString();
