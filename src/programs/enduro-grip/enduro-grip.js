@@ -1,35 +1,18 @@
 import { add } from 'date-fns';
+import { validate } from 'class-validator';
 import { CircularArray } from '../../utils/array.js';
 import { roundDate } from '../../utils/date.js';
+import { EnduroGripAchieved, EnduroGripInit, } from './enduro-grip-types.js';
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 const EnduroGrip = {
-    valiateInitData: ({ startDate, schedule }) => {
-        // Check if date is number and converts to date
-        if (Number.isNaN(Number(startDate))) {
-            return false;
-        }
-        if (new Date(Number(startDate)).toString() === 'Invalid Date') {
-            return false;
-        }
-        // Check allowed schedules
-        if (!Array.isArray(schedule)) {
-            return false;
-        }
-        switch (schedule.length) {
-            case 1:
-                if (Number(schedule[0]) !== 4) {
-                    return false;
-                }
-                break;
-            case 2:
-                if (Number(schedule[0]) !== 4 || Number(schedule[1]) !== 3) {
-                    return false;
-                }
-                break;
-            default:
+    valiateInitData: async ({ startDate, schedule, }) => {
+        const initData = new EnduroGripInit(startDate, schedule);
+        return validate(initData).then((errors) => {
+            if (errors.length > 0) {
                 return false;
-        }
-        return true;
+            }
+            return initData;
+        });
     },
     getInitData: ({ startDate, schedule }) => {
         return {
@@ -40,19 +23,17 @@ const EnduroGrip = {
             currentScheduleIndex: 0,
         };
     },
-    validateAchievedData: (achieved) => {
-        if (achieved === 'skip') {
-            return true;
+    validateAchievedData: async (achievedRaw) => {
+        if (achievedRaw === 'skip') {
+            return 'skip';
         }
-        // Check for sets prop
-        if (!('sets' in achieved)) {
-            return false;
-        }
-        // Check that sets are a number
-        if (Number.isNaN(Number(achieved.sets))) {
-            return false;
-        }
-        return true;
+        const achieved = new EnduroGripAchieved(achievedRaw.sets);
+        return validate(achieved).then((errors) => {
+            if (errors.length > 0) {
+                return false;
+            }
+            return achieved;
+        });
     },
     getNextState: (prevState, achieved) => {
         const skip = achieved === 'skip';

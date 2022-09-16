@@ -1,4 +1,5 @@
 import { add } from 'date-fns';
+import { validate } from 'class-validator';
 
 import { CircularArray } from '../../utils/array.js';
 import { roundDate } from '../../utils/date.js';
@@ -11,37 +12,17 @@ import {
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 
 const EnduroGrip = {
-  valiateInitData: ({ startDate, schedule }: EnduroGripInit): boolean => {
-    // Check if date is number and converts to date
-    if (Number.isNaN(Number(startDate))) {
-      return false;
-    }
-    if (new Date(Number(startDate)).toString() === 'Invalid Date') {
-      return false;
-    }
-
-    // Check allowed schedules
-    if (!Array.isArray(schedule)) {
-      return false;
-    }
-    switch (schedule.length) {
-      case 1:
-        if (Number(schedule[0]) !== 4) {
-          return false;
-        }
-        break;
-
-      case 2:
-        if (Number(schedule[0]) !== 4 || Number(schedule[1]) !== 3) {
-          return false;
-        }
-        break;
-
-      default:
+  valiateInitData: async ({
+    startDate,
+    schedule,
+  }: EnduroGripInit): Promise<EnduroGripInit | false> => {
+    const initData = new EnduroGripInit(startDate, schedule);
+    return validate(initData).then((errors) => {
+      if (errors.length > 0) {
         return false;
-    }
-
-    return true;
+      }
+      return initData;
+    });
   },
   getInitData: ({ startDate, schedule }: EnduroGripInit): EnduroGripState => {
     return {
@@ -53,22 +34,21 @@ const EnduroGrip = {
     };
   },
 
-  validateAchievedData: (achieved: EnduroGripAchieved | 'skip'): boolean => {
-    if (achieved === 'skip') {
-      return true;
+  validateAchievedData: async (
+    achievedRaw: EnduroGripAchieved | 'skip'
+  ): Promise<EnduroGripAchieved | 'skip' | false> => {
+    if (achievedRaw === 'skip') {
+      return 'skip';
     }
 
-    // Check for sets prop
-    if (!('sets' in achieved)) {
-      return false;
-    }
+    const achieved = new EnduroGripAchieved(achievedRaw.sets);
 
-    // Check that sets are a number
-    if (Number.isNaN(Number(achieved.sets))) {
-      return false;
-    }
-
-    return true;
+    return validate(achieved).then((errors) => {
+      if (errors.length > 0) {
+        return false;
+      }
+      return achieved;
+    });
   },
   getNextState: (
     prevState: EnduroGripState,
