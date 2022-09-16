@@ -1,7 +1,9 @@
 import { add } from 'date-fns';
+import { validate } from 'class-validator';
 import { roundDate, now } from '../../utils/date.js';
+import { eesAchieved } from './ees-types.js';
 export default {
-    valiateInitData: () => true,
+    transformInitData: async () => true,
     getInitData: () => {
         const now = roundDate(new Date());
         return {
@@ -15,36 +17,17 @@ export default {
             },
         };
     },
-    validateAchievedData: (achieved) => {
-        if (achieved === 'skip') {
-            return true;
+    transformAchievedData: async (achievedRaw) => {
+        if (achievedRaw === 'skip') {
+            return 'skip';
         }
-        let isValid = true;
-        // Has props
-        isValid = isValid && 'push' in achieved;
-        isValid = isValid && 'pull' in achieved;
-        isValid = isValid && 'squat' in achieved;
-        isValid = isValid && 'ab' in achieved;
-        isValid = isValid && 'accessory' in achieved;
-        if (!isValid) {
-            return false;
-        }
-        // Props are numbers
-        isValid = isValid && !Number.isNaN(Number(achieved.push));
-        isValid = isValid && !Number.isNaN(Number(achieved.pull));
-        isValid = isValid && !Number.isNaN(Number(achieved.squat));
-        isValid = isValid && !Number.isNaN(Number(achieved.ab));
-        isValid = isValid && !Number.isNaN(Number(achieved.accessory));
-        if (!isValid) {
-            return false;
-        }
-        // Props are less than or equal to two
-        isValid = isValid && achieved.push <= 2 && achieved.push >= 0;
-        isValid = isValid && achieved.pull <= 2 && achieved.pull >= 0;
-        isValid = isValid && achieved.squat <= 2 && achieved.squat >= 0;
-        isValid = isValid && achieved.ab <= 2 && achieved.ab >= 0;
-        isValid = isValid && achieved.accessory <= 2 && achieved.accessory >= 0;
-        return isValid;
+        const achived = new eesAchieved(achievedRaw.push, achievedRaw.pull, achievedRaw.squat, achievedRaw.ab, achievedRaw.accessory);
+        return validate(achived).then((errors) => {
+            if (errors.length > 0) {
+                return false;
+            }
+            return achived;
+        });
     },
     getNextState: (state, achieved) => {
         const skip = achieved === 'skip';

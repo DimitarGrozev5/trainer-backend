@@ -1,3 +1,5 @@
+import { IsInt, Min, Max } from 'class-validator';
+
 export interface eesState {
   sessionDate: number;
   setsDone: SetsDone;
@@ -15,4 +17,43 @@ export interface SetsDone {
 
 export interface eesInit {}
 
-export interface eesAchieved extends SetsDone {}
+export class eesAchieved implements SetsDone {
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  push: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  pull: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  squat: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  ab: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(2)
+  accessory: number;
+
+  constructor(
+    push: number,
+    pull: number,
+    squat: number,
+    ab: number,
+    accessory: number
+  ) {
+    this.push = push;
+    this.pull = pull;
+    this.squat = squat;
+    this.ab = ab;
+    this.accessory = accessory;
+  }
+}
