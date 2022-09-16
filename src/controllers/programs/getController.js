@@ -1,11 +1,5 @@
-import bcrypt from 'bcrypt';
-
 import HttpError from '../../models/HttpError.js';
-import { hashValue } from '../../services/hashService.js';
-import {
-  fromModel,
-  ProgramfromModel,
-} from '../../services/program-transformer.js';
+import { ProgramfromModel } from '../../services/program-transformer.js';
 
 export const get = async (req, res, next) => {
   // Get program

@@ -1,5 +1,4 @@
 import HttpError from '../../models/HttpError.js';
-import User from '../../models/User.js';
 import { programs, eqStates } from '../../programs/index.js';
 import { hashValue } from '../../services/hashService.js';
 import { rand } from '../../services/randomService.js';
