@@ -1,13 +1,14 @@
 import HttpError from '../../models/HttpError.js';
-import { getSpecificProgram } from '../helpers/get-specific-program.js';
+import User from '../../models/User.js';
+import { hashValue } from '../../services/hashService.js';
 
 export const get = async (req, res, next) => {
   // Get program id
   const programId = req.params.programId;
 
-  let program;
+  let user;
   try {
-    program = await getSpecificProgram(req.userData.userId, programId);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -17,7 +18,11 @@ export const get = async (req, res, next) => {
     return next(error);
   }
 
-  if (!program) {
+  const fullProgram = user.activePrograms.find((pr) => {
+    return pr.id === programId;
+  });
+
+  if (!fullProgram) {
     console.log('Program not found!');
     const error = new HttpError(
       'The user is not using this program! Please try again later!',
@@ -25,6 +30,11 @@ export const get = async (req, res, next) => {
     );
     return next(error);
   }
+
+  // Hash version
+  const version = hashValue(fullProgram.version.toString());
+
+  const program = { id: fullProgram.id, state: fullProgram.state, version };
 
   res.json(program);
 };
