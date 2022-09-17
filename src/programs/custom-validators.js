@@ -7,7 +7,7 @@ export function IsUTCDate() {
             propertyName: propertyName,
             validator: {
                 validate(value) {
-                    return new Date(Number(value)).toString() === 'Invalid Date';
+                    return new Date(Number(value)).toString() !== 'Invalid Date';
                 },
             },
         });
