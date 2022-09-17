@@ -12,13 +12,14 @@ import {
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 
 const EnduroGrip = {
-  valiateInitData: async ({
+  transformInitData: async ({
     startDate,
     schedule,
   }: EnduroGripInit): Promise<EnduroGripInit | false> => {
     const initData = new EnduroGripInit(startDate, schedule);
     return validate(initData).then((errors) => {
       if (errors.length > 0) {
+        console.log(errors);
         return false;
       }
       return initData;
@@ -26,7 +27,7 @@ const EnduroGrip = {
   },
   getInitData: ({ startDate, schedule }: EnduroGripInit): EnduroGripState => {
     return {
-      sessionDate: startDate.getTime(),
+      sessionDate: startDate,
       sessionIndex: 0,
       lastHeavySessionAchieved: 9,
       schedule,
@@ -34,7 +35,7 @@ const EnduroGrip = {
     };
   },
 
-  validateAchievedData: async (
+  transformAchievedData: async (
     achievedRaw: EnduroGripAchieved | 'skip'
   ): Promise<EnduroGripAchieved | 'skip' | false> => {
     if (achievedRaw === 'skip') {

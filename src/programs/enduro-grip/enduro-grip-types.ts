@@ -29,12 +29,12 @@ export class EnduroGripInit {
   @IsInt()
   @IsPositive()
   @IsUTCDate()
-  startDate: Date;
+  startDate: number;
 
   @IsScheduleArray()
   schedule: number[];
 
-  constructor(startDate: Date, schedule: number[]) {
+  constructor(startDate: number, schedule: number[]) {
     this.startDate = startDate;
     this.schedule = schedule;
   }
