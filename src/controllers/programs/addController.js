@@ -60,8 +60,6 @@ export const add = async (req, res, next) => {
     return next(error);
   }
 
-  ///////////////////////////////////////////////////////////////////////// Refactored to here
-
   // Return new program
   let hashedVersion;
   try {

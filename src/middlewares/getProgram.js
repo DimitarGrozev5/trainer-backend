@@ -1,3 +1,5 @@
+import { validIds } from '../programs';
+
 export const getProgram =
   ({ fromParams = true, fromBody = false, exitIfMissing = true } = {}) =>
   async (req, res, next) => {
@@ -14,6 +16,13 @@ export const getProgram =
     if (id === undefined) {
       console.log('ID not provided');
       const error = new HttpError('No id provided!', 422);
+      return next(error);
+    }
+
+    // Check if the id is valid
+    if (!validIds.find((i) => (i = id))) {
+      console.log('ID is invalid');
+      const error = new HttpError('Id is invalid!', 422);
       return next(error);
     }
 
