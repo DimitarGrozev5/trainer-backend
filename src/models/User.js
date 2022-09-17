@@ -13,7 +13,7 @@ const userSchema = new Schema({
     {
       id: { type: String, required: true, enum: validIds },
       state: { type: Object, required: true },
-      salt: { type: Number, required: true },
+      salt: { type: String, required: true },
     },
   ],
 });
