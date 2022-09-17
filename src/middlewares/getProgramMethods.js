@@ -1,7 +1,7 @@
 import { programs } from '../programs/index.js';
 
-export const getProgramMethods = (req, res, next) => {
-  const id = req.userData?.targetProgram.id;
+export const getProgramMethods = () => (req, res, next) => {
+  const id = req.userData.targetProgramId;
 
   if (!programs.has(id)) {
     console.log('Invalid program id');

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import BlacklistedJWT from '../models/BlacklistedJWT.js';
 import HttpError from '../models/HttpError.js';
 
-export const isAuth = async (req, res, next) => {
+export const isAuth = () => async (req, res, next) => {
   try {
     const token = req.headers.authorization;
     if (!token) {

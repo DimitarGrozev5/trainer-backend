@@ -1,6 +1,6 @@
 import HttpError from '../../models/HttpError.js';
 import { eqStates } from '../../programs/index.js';
-import { getSalt } from '../../services/hashService.js';
+import { getSalt, getHash } from '../../services/hashService.js';
 
 // Update a specific program
 export const update = async (req, res, next) => {

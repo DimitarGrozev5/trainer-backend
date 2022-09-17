@@ -5,6 +5,9 @@ export const remove = async (req, res, next) => {
   // Get user
   const user = req.userData.User;
 
+  // Get program id
+  const programId = req.userData.targetProgramId;
+
   // Find and remove program by programId
   user.activePrograms = user.activePrograms.filter((pr) => {
     if (pr.id === programId) {

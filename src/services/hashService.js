@@ -5,7 +5,7 @@ export const getHash = async (value, salt) => {
   return fullHashOutput.split('$').pop().substring(22);
 };
 
-export const getSalt = async () => bcrypt.getSalt(12);
+export const getSalt = async () => bcrypt.genSalt(12);
 
 // TODO: remove
 ////////vvvvvvvvvv Obsolete

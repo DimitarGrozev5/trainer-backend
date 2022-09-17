@@ -1,20 +1,16 @@
 import { ProgramfromModel } from '../services/program-transformer.js';
+import HttpError from '../models/HttpError.js';
 
-export const validateVersion = async (req, res, next) => {
+export const validateVersion = () => async (req, res, next) => {
   // Get received version
   const { version } = req.body;
 
   // Get program
   const program = req.userData.targetProgram;
 
-  // Get program salt
-  const salt = program.salt;
-
   // Generate comparison hash
-  const trueHash = ProgramfromModel(
-    program.id,
-    program.state,
-    program.salt
+  const trueHash = (
+    await ProgramfromModel(program.id, program.state, program.salt)
   )?.version;
 
   // Validate version

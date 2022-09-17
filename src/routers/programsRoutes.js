@@ -10,49 +10,54 @@ import { getUser } from '../middlewares/getUserMiddleware.js';
 import { getProgram } from '../middlewares/getProgram.js';
 import { getProgramMethods } from '../middlewares/getProgramMethods.js';
 import { validateVersion } from '../middlewares/validateVersion.js';
+import { getProgramId } from '../middlewares/getProgramId.js';
 
 const router = express.Router();
 
 // Get all workouts for user
-router.get('/', isAuth, getUser, getAll);
+router.get('/', isAuth(), getUser(), getAll);
 
 // Start doing a specific workout
 router.post(
   '/',
-  isAuth,
-  getUser,
-  getProgram({ fromBody: true, exitIfMissing: false }),
-  getProgramMethods,
+  isAuth(),
+  getUser(),
+  getProgramId({ fromBody: true }),
+  getProgram({ exitIfMissing: false }),
+  getProgramMethods({ fromBody: true }),
   add
 );
 
 // Get specific workout
 router.get(
   '/:programId',
-  isAuth,
-  getUser,
-  getProgram({ fromParams: true }),
+  isAuth(),
+  getUser(),
+  getProgramId({ fromParams: true }),
+  getProgram(),
   get
 );
 
 // Delete specific workout
 router.delete(
   '/:programId',
-  isAuth,
-  getUser,
-  getProgram({ fromParams: true }),
-  validateVersion,
+  isAuth(),
+  getUser(),
+  getProgramId({ fromParams: true }),
+  getProgram(),
+  validateVersion(),
   remove
 );
 
 // Update a specific workout
 router.patch(
   '/:programId',
-  isAuth,
-  getUser,
-  getProgram({ fromParams: true }),
-  validateVersion,
-  getProgramMethods,
+  isAuth(),
+  getUser(),
+  getProgramId({ fromParams: true }),
+  getProgram(),
+  validateVersion(),
+  getProgramMethods(),
   update
 );
 
