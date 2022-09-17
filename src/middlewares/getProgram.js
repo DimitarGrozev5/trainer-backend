@@ -1,4 +1,4 @@
-import { validIds } from '../programs';
+import { validIds } from '../programs/index.js';
 
 export const getProgram =
   ({ fromParams = true, fromBody = false, exitIfMissing = true } = {}) =>
@@ -20,7 +20,7 @@ export const getProgram =
     }
 
     // Check if the id is valid
-    if (!validIds.find((i) => (i = id))) {
+    if (!validIds.find((i) => (i === id))) {
       console.log('ID is invalid');
       const error = new HttpError('Id is invalid!', 422);
       return next(error);

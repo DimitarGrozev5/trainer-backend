@@ -1,12 +1,6 @@
 import HttpError from '../../models/HttpError.js';
-import User from '../../models/User.js';
-import { programs, eqStates } from '../../programs/index.js';
-import {
-  getSalt,
-  hashValue,
-  validateHash,
-} from '../../services/hashService.js';
-import { nextRand } from '../../services/randomService.js';
+import { eqStates } from '../../programs/index.js';
+import { getSalt } from '../../services/hashService.js';
 
 // Update a specific program
 export const update = async (req, res, next) => {

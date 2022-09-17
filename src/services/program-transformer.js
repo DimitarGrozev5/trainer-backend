@@ -1,5 +1,4 @@
-import bcrypt from 'bcrypt';
-import { getHash } from './hashService';
+import { getHash } from './hashService.js';
 
 export const ProgramfromModel = async (id, state, salt) => {
   // Generate sting based on program state

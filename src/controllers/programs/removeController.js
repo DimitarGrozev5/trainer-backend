@@ -1,6 +1,4 @@
 import HttpError from '../../models/HttpError.js';
-import User from '../../models/User.js';
-import { validateHash } from '../../services/hashService.js';
 
 // Delete specific program
 export const remove = async (req, res, next) => {

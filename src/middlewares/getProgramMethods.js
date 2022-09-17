@@ -1,4 +1,4 @@
-import { programs } from '../../programs/index.js';
+import { programs } from '../programs/index.js';
 
 export const getProgramMethods = (req, res, next) => {
   const id = req.userData?.targetProgram.id;

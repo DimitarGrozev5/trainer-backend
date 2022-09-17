@@ -1,5 +1,4 @@
-import bcrypt from 'bcrypt';
-import { ProgramfromModel } from '../services/program-transformer';
+import { ProgramfromModel } from '../services/program-transformer.js';
 
 export const validateVersion = async (req, res, next) => {
   // Get received version
