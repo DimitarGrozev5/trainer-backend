@@ -1,8 +1,6 @@
-import bcrypt from 'bcrypt';
-
 import HttpError from '../../models/HttpError.js';
 import { eqStates } from '../../programs/index.js';
-import { getSalt, hashValue } from '../../services/hashService.js';
+import { getHash, getSalt, hashValue } from '../../services/hashService.js';
 
 // Start doing a specific program
 export const add = async (req, res, next) => {
@@ -61,17 +59,10 @@ export const add = async (req, res, next) => {
   }
 
   // Return new program
-  let hashedVersion;
-  try {
-    hashedVersion = await hashValue(initVersion);
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError(
-      'Adding the program failed! Please try again later!',
-      500
-    );
-    return next(error);
-  }
+  const hashableData = JSON.stringify({ id, state: initState, salt });
 
-  res.json({ confirmed: true, nextVersion: hashedVersion });
+  // Extract only the hash
+  const versionHash = await getHash(hashableData, salt);
+
+  res.json({ confirmed: true, version: versionHash });
 };

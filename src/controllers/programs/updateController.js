@@ -1,7 +1,11 @@
 import HttpError from '../../models/HttpError.js';
 import User from '../../models/User.js';
 import { programs, eqStates } from '../../programs/index.js';
-import { hashValue, validateHash } from '../../services/hashService.js';
+import {
+  getSalt,
+  hashValue,
+  validateHash,
+} from '../../services/hashService.js';
 import { nextRand } from '../../services/randomService.js';
 
 // Update a specific program
@@ -36,14 +40,13 @@ export const update = async (req, res, next) => {
   }
 
   // Find and update program by programId
-  let nextVersion = '';
+  const salt = await getSalt();
   user.activePrograms = user.activePrograms.map((pr) => {
     if (pr.id !== programId) {
       return pr;
     }
 
-    nextVersion = nextRand(pr.version.toString());
-    return { id, state, version: nextVersion };
+    return { id, state, salt };
   });
 
   try {
@@ -57,7 +60,11 @@ export const update = async (req, res, next) => {
     return next(error);
   }
 
-  const hashed = await hashValue(nextVersion);
+  // Return new program
+  const hashableData = JSON.stringify({ id, state, salt });
 
-  res.json({ success: true, version: hashed });
+  // Extract only the hash
+  const versionHash = await getHash(hashableData, salt);
+
+  res.json({ confirmed: true, version: versionHash });
 };
