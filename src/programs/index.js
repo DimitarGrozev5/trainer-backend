@@ -1,14 +1,16 @@
 import ees from './ees/even-easier-strength.js';
 import EnduroGrip from './enduro-grip/enduro-grip.js';
+import quickDead from './quick-dead/quick-dead.js';
 
 // Store valid program ids
-export const validIds = ['ees', 'EnduroGrip'];
+export const validIds = ['ees', 'EnduroGrip', 'quick-dead'];
 
 // Setup programs map
 export const programs = new Map();
 
 programs.set('ees', ees);
 programs.set('EnduroGrip', EnduroGrip);
+programs.set('quick-dead', quickDead);
 
 // Helper function for comparing states
 const isObject = (object) => {

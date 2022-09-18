@@ -6,7 +6,7 @@ import { qdInit, qdState, qdAchieved } from './qd-types.js';
 
 const schedule = [2, 2, 3];
 
-export const quickDead = {
+const quickDead = {
   transformInitData: async (initRaw: qdInit): Promise<qdInit | false> => {
     const initData = new qdInit(initRaw.startDate);
     return validate(initData).then((errors) => {
@@ -78,3 +78,4 @@ export const quickDead = {
     };
   },
 };
+export default quickDead;

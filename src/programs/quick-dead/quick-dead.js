@@ -4,7 +4,7 @@ import { CircularArray } from '../../utils/array.js';
 import { roundDate } from '../../utils/date.js';
 import { qdInit, qdAchieved } from './qd-types.js';
 const schedule = [2, 2, 3];
-export const quickDead = {
+const quickDead = {
     transformInitData: async (initRaw) => {
         const initData = new qdInit(initRaw.startDate);
         return validate(initData).then((errors) => {
@@ -55,3 +55,4 @@ export const quickDead = {
         };
     },
 };
+export default quickDead;

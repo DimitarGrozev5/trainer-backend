@@ -1,5 +1,5 @@
 import { registerDecorator } from 'class-validator';
-import { IsUTCDate } from '../custom-validators';
+import { IsUTCDate } from '../custom-validators.js';
 
 function IsQDVolume() {
   return function (object: Object, propertyName: string) {
