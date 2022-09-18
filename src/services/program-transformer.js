@@ -10,11 +10,11 @@ export const ProgramfromModel = async (id, state, salt) => {
 
   let outputState = { ...state };
   if ('sessionDate' in state) {
-    // const now = roundDate(new Date()).getTime();
+    const now = roundDate(new Date()).getTime();
 
-    // if (state.sessionDate < now) {
-    //   outputState.sessionDate = now;
-    // }
+    if (state.sessionDate < now) {
+      outputState.sessionDate = now;
+    }
   }
 
   return {

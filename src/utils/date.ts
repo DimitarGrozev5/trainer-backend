@@ -1,25 +1,25 @@
-import { add } from "date-fns";
+import { last } from './array';
 
 // Get month name
 export const getMonthName = (date: Date) => {
   return [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ][date.getMonth()];
 };
 
 export const getWeekDayShortName = (day: number) =>
-  ["Mon", "Thu", "Thi", "Wed", "Fri", "Sat", "Sun"][day % 7];
+  ['Mon', 'Thu', 'Thi', 'Wed', 'Fri', 'Sat', 'Sun'][day % 7];
 
 // Function to add leading zeroes
 export const lz = (num: number, length: number = 2): string => {
@@ -29,26 +29,26 @@ export const lz = (num: number, length: number = 2): string => {
 // Remove hours minutes and seconds from Date
 export const roundDate = (
   date: Date,
-  to: "miliseconds" | "seconds" | "minutes" | "hours" = "hours"
+  to: 'miliseconds' | 'seconds' | 'minutes' | 'hours' = 'hours'
 ): Date => {
   const d = new Date(date);
 
   switch (to) {
     // @ts-ignore
-    case "hours": // eslint-disable-line
-      d.setHours(0);
+    case 'hours': // eslint-disable-line
+      d.setUTCHours(0);
 
     // @ts-ignore
-    case "minutes": // eslint-disable-line
-      d.setMinutes(0);
+    case 'minutes': // eslint-disable-line
+      d.setUTCMinutes(0);
 
     // @ts-ignore
-    case "seconds": // eslint-disable-line
-      d.setSeconds(0);
+    case 'seconds': // eslint-disable-line
+      d.setUTCSeconds(0);
 
     // @ts-ignore
-    case "miliseconds": // eslint-disable-line
-      d.setMilliseconds(0);
+    case 'miliseconds': // eslint-disable-line
+      d.setUTCMilliseconds(0);
 
     default: // eslint-disable-line
       break;
@@ -80,28 +80,9 @@ export const sameMonth = (date1: Date, date2: Date): boolean => {
 // Generate an array of the days of a month, based on a Date from that month
 type DateUTC = number;
 
-const nextDaysMonth = (arr: Date[][]): number => {
-  const last = arr.length;
-  if (!last) {
-    return -1;
-  }
-
-  const lastValLen = arr[last - 1].length;
-  if (!lastValLen) {
-    return -1;
-  }
-
-  const today = arr[last - 1][lastValLen - 1];
-  const nextDay = add(today, { days: 1 });
-
-  return today.getMonth() === 11 && nextDay.getMonth() === 0
-    ? 12
-    : nextDay.getMonth();
-};
-
 export const getMonthArr = (
   date: Date,
-  { getNumOfWeeks = 6, skipDaysFromOtherMonths = false } = {}
+  { getNumOfWeeks = 6 } = {}
 ): Date[][] => {
   // Get current month
   const currentMonth = date.getMonth();
@@ -123,7 +104,13 @@ export const getMonthArr = (
 
   // Generate array for month
   const month: Date[][] = [];
-  while (month.length < getNumOfWeeks || nextDaysMonth(month) <= currentMonth) {
+  let lastDayOfWeek = firstDay;
+
+  // Loop through weeks until reaching the desired number of weeks or until the date goes to another month
+  while (
+    month.length < getNumOfWeeks ||
+    lastDayOfWeek.getMonth() === currentMonth
+  ) {
     const weekArr: Date[] = [];
     for (let day = 0; day < 7; day++) {
       const today = new Date(
@@ -134,6 +121,7 @@ export const getMonthArr = (
       weekArr.push(today);
     }
     month.push(weekArr);
+    lastDayOfWeek = last(weekArr);
   }
 
   return month;
