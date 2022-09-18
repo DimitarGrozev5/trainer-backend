@@ -1,4 +1,4 @@
-import { last } from './array';
+import { last } from './array.js';
 
 // Get month name
 export const getMonthName = (date: Date) => {
