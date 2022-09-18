@@ -14,7 +14,7 @@ export const getMonthName = (date) => {
         'October',
         'November',
         'December',
-    ][date.getMonth()];
+    ][date.getUTCMonth()];
 };
 export const getWeekDayShortName = (day) => ['Mon', 'Thu', 'Thi', 'Wed', 'Fri', 'Sat', 'Sun'][day % 7];
 // Function to add leading zeroes
@@ -46,18 +46,18 @@ export const roundDate = (date, to = 'hours') => {
 export const now = () => roundDate(new Date());
 // Check if two dates are the same, ignoring hours, minutes, seconds and miliseconds
 export const sameDate = (date1, date2) => {
-    return (date1.getFullYear() === date2.getFullYear() &&
-        date1.getMonth() === date2.getMonth() &&
-        date1.getDate() === date2.getDate());
+    return (date1.getUTCFullYear() === date2.getUTCFullYear() &&
+        date1.getUTCMonth() === date2.getUTCMonth() &&
+        date1.getUTCDate() === date2.getUTCDate());
 };
 // Check if two dates are in the same month
 export const sameMonth = (date1, date2) => {
-    return (date1.getFullYear() === date2.getFullYear() &&
-        date1.getMonth() === date2.getMonth());
+    return (date1.getUTCFullYear() === date2.getUTCFullYear() &&
+        date1.getUTCMonth() === date2.getUTCMonth());
 };
 export const getMonthArr = (date, { getNumOfWeeks = 6 } = {}) => {
     // Get current month
-    const currentMonth = date.getMonth();
+    const currentMonth = date.getUTCMonth();
     // Get first day of month
     const firstDay = new Date(date.getTime());
     firstDay.setMilliseconds(0);
@@ -66,7 +66,7 @@ export const getMonthArr = (date, { getNumOfWeeks = 6 } = {}) => {
     firstDay.setHours(0);
     firstDay.setDate(1);
     // Get day of week
-    const firstDayOfWeek = firstDay.getDay();
+    const firstDayOfWeek = firstDay.getUTCDay();
     // Get date of monday
     const mondayDateUTC = firstDay.getTime() - firstDayOfWeek * 24 * 60 * 60 * 1000;
     // Generate array for month
@@ -74,7 +74,7 @@ export const getMonthArr = (date, { getNumOfWeeks = 6 } = {}) => {
     let lastDayOfWeek = firstDay;
     // Loop through weeks until reaching the desired number of weeks or until the date goes to another month
     while (month.length < getNumOfWeeks ||
-        lastDayOfWeek.getMonth() === currentMonth) {
+        lastDayOfWeek.getUTCMonth() === currentMonth) {
         const weekArr = [];
         for (let day = 0; day < 7; day++) {
             const today = new Date(mondayDateUTC +
