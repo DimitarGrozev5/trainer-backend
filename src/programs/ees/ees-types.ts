@@ -1,7 +1,8 @@
 import { IsInt, Min, Max } from 'class-validator';
+import { SessionDate } from '../extra-types';
 
 export interface eesState {
-  sessionDate: number;
+  sessionDate: SessionDate;
   setsDone: SetsDone;
 }
 

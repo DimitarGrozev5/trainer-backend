@@ -1,5 +1,6 @@
 import { registerDecorator } from 'class-validator';
-import { IsUTCDate } from '../custom-validators.js';
+import { IsSessionDate } from '../custom-validators.js';
+import { SessionDate } from '../extra-types.js';
 
 function IsQDVolume() {
   return function (object: Object, propertyName: string) {
@@ -24,16 +25,16 @@ function IsQDVolume() {
 export type qdVolume = 40 | 60 | 80 | 100;
 
 export interface qdState {
-  sessionDate: number;
+  sessionDate: SessionDate;
   scheduleIndex: number;
   lastVolume: qdVolume;
 }
 
 export class qdInit {
-  @IsUTCDate()
-  startDate: number;
+  @IsSessionDate()
+  startDate: SessionDate;
 
-  constructor(startDate: number) {
+  constructor(startDate: SessionDate) {
     this.startDate = startDate;
   }
 }

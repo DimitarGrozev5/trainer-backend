@@ -3,13 +3,14 @@ import { validate } from 'class-validator';
 
 import { roundDate, now } from '../../utils/date.js';
 import { eesAchieved, eesState } from './ees-types.js';
+import { SessionDate } from '../extra-types.js';
 
 export default {
   transformInitData: async () => true,
   getInitData: (): eesState => {
     const now = roundDate(new Date());
     return {
-      sessionDate: now.getTime(),
+      sessionDate: SessionDate.from(now),
       setsDone: {
         push: 0,
         pull: 0,
@@ -66,7 +67,7 @@ export default {
     const { sessionDate: UTCDate } = state;
 
     // Convert sessionDate to Date object
-    const sessionDate = new Date(UTCDate);
+    const sessionDate = SessionDate.toDate(UTCDate);
 
     // If *skip* calcualte next date based on last session date
     const cDate = skip ? sessionDate : now();
@@ -111,7 +112,7 @@ export default {
     }
 
     return {
-      sessionDate: nextSessionDate.getTime(),
+      sessionDate: SessionDate.from(nextSessionDate),
       setsDone,
     };
   },

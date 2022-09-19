@@ -1,6 +1,7 @@
 import { registerDecorator, IsInt, IsPositive } from 'class-validator';
 
-import { IsUTCDate } from '../custom-validators.js';
+import { IsSessionDate } from '../custom-validators.js';
+import { SessionDate } from '../extra-types.js';
 
 function IsScheduleArray() {
   return function (object: Object, propertyName: string) {
@@ -18,7 +19,7 @@ function IsScheduleArray() {
 }
 
 export interface EnduroGripState {
-  sessionDate: number;
+  sessionDate: SessionDate;
   sessionIndex: number;
   lastHeavySessionAchieved: number;
   schedule: number[];
@@ -26,15 +27,13 @@ export interface EnduroGripState {
 }
 
 export class EnduroGripInit {
-  @IsInt()
-  @IsPositive()
-  @IsUTCDate()
-  startDate: number;
+  @IsSessionDate()
+  startDate: SessionDate;
 
   @IsScheduleArray()
   schedule: number[];
 
-  constructor(startDate: number, schedule: number[]) {
+  constructor(startDate: SessionDate, schedule: number[]) {
     this.startDate = startDate;
     this.schedule = schedule;
   }

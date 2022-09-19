@@ -2,6 +2,7 @@ import { validate } from 'class-validator';
 import { add, isEqual } from 'date-fns';
 import { CircularArray } from '../../utils/array.js';
 import { roundDate } from '../../utils/date.js';
+import { SessionDate } from '../extra-types.js';
 import { qdInit, qdState, qdAchieved } from './qd-types.js';
 
 const schedule = [2, 2, 3];
@@ -55,7 +56,7 @@ const quickDead = {
 
     /// Calculate next session date
     // Convert sessionDate to Date object
-    const sessionDate = new Date(sessionDateUtc);
+    const sessionDate = SessionDate.toDate(sessionDateUtc);
 
     // Convert schedule to CircularArray
     const schedulePlan = new CircularArray<number>(schedule, scheduleIndex);
@@ -72,7 +73,7 @@ const quickDead = {
     const nextScheduleIndex = schedulePlan.getIndex(+1);
 
     return {
-      sessionDate: nextSessionDate.getTime(),
+      sessionDate: SessionDate.from(nextSessionDate),
       scheduleIndex: nextScheduleIndex,
       lastVolume: skip ? lastVolume : achieved.volume,
     };

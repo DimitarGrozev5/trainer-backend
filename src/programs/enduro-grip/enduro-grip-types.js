@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerDecorator, IsInt, IsPositive } from 'class-validator';
-import { IsUTCDate } from '../custom-validators.js';
+import { IsSessionDate } from '../custom-validators.js';
 function IsScheduleArray() {
     return function (object, propertyName) {
         registerDecorator({
@@ -27,9 +27,7 @@ export class EnduroGripInit {
     }
 }
 __decorate([
-    IsInt(),
-    IsPositive(),
-    IsUTCDate()
+    IsSessionDate()
 ], EnduroGripInit.prototype, "startDate", void 0);
 __decorate([
     IsScheduleArray()

@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { CircularArray } from '../../utils/array.js';
 import { roundDate } from '../../utils/date.js';
 import { EnduroGripAchieved, EnduroGripInit, } from './enduro-grip-types.js';
+import { SessionDate } from '../extra-types.js';
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 const EnduroGrip = {
     transformInitData: async ({ startDate, schedule, }) => {
@@ -41,7 +42,7 @@ const EnduroGrip = {
         const { sessionDate: sessionDateUtc, sessionIndex, lastHeavySessionAchieved, schedule, currentScheduleIndex, } = prevState;
         /// Calculate next session date
         // Convert sessionDate to Date object
-        const sessionDate = new Date(sessionDateUtc);
+        const sessionDate = SessionDate.toDate(sessionDateUtc);
         // Convert schedule to CircularArray
         const schedulePlan = new CircularArray(schedule, currentScheduleIndex);
         // Select the base date
@@ -75,7 +76,7 @@ const EnduroGrip = {
             }
         }
         return {
-            sessionDate: nextSessionDate.getTime(),
+            sessionDate: SessionDate.from(nextSessionDate),
             sessionIndex: nextSessionIndex,
             lastHeavySessionAchieved: heavySessionAchieved,
             schedule,

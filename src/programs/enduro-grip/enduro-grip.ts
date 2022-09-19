@@ -8,6 +8,7 @@ import {
   EnduroGripInit,
   EnduroGripState,
 } from './enduro-grip-types.js';
+import { SessionDate } from '../extra-types.js';
 
 const trainingRotation = [4, 1, 6, 2, 8, 3, 5, 1, 7, 2, 9, 3];
 
@@ -67,7 +68,7 @@ const EnduroGrip = {
 
     /// Calculate next session date
     // Convert sessionDate to Date object
-    const sessionDate = new Date(sessionDateUtc);
+    const sessionDate = SessionDate.toDate(sessionDateUtc);
 
     // Convert schedule to CircularArray
     const schedulePlan = new CircularArray<number>(
@@ -116,7 +117,7 @@ const EnduroGrip = {
     }
 
     return {
-      sessionDate: nextSessionDate.getTime(),
+      sessionDate: SessionDate.from(nextSessionDate),
       sessionIndex: nextSessionIndex,
       lastHeavySessionAchieved: heavySessionAchieved,
       schedule,
