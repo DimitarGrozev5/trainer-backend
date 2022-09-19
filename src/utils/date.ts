@@ -15,7 +15,7 @@ export const getMonthName = (date: Date) => {
     'October',
     'November',
     'December',
-  ][date.getUTCMonth()];
+  ][date.getMonth()];
 };
 
 export const getWeekDayShortName = (day: number) =>
@@ -36,19 +36,19 @@ export const roundDate = (
   switch (to) {
     // @ts-ignore
     case 'hours': // eslint-disable-line
-      d.setUTCHours(0);
+      d.setHours(0);
 
     // @ts-ignore
     case 'minutes': // eslint-disable-line
-      d.setUTCMinutes(0);
+      d.setMinutes(0);
 
     // @ts-ignore
     case 'seconds': // eslint-disable-line
-      d.setUTCSeconds(0);
+      d.setSeconds(0);
 
     // @ts-ignore
     case 'miliseconds': // eslint-disable-line
-      d.setUTCMilliseconds(0);
+      d.setMilliseconds(0);
 
     default: // eslint-disable-line
       break;
@@ -63,17 +63,17 @@ export const now = () => roundDate(new Date());
 // Check if two dates are the same, ignoring hours, minutes, seconds and miliseconds
 export const sameDate = (date1: Date, date2: Date): boolean => {
   return (
-    date1.getUTCFullYear() === date2.getUTCFullYear() &&
-    date1.getUTCMonth() === date2.getUTCMonth() &&
-    date1.getUTCDate() === date2.getUTCDate()
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
   );
 };
 
 // Check if two dates are in the same month
 export const sameMonth = (date1: Date, date2: Date): boolean => {
   return (
-    date1.getUTCFullYear() === date2.getUTCFullYear() &&
-    date1.getUTCMonth() === date2.getUTCMonth()
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth()
   );
 };
 
@@ -85,7 +85,7 @@ export const getMonthArr = (
   { getNumOfWeeks = 6 } = {}
 ): Date[][] => {
   // Get current month
-  const currentMonth = date.getUTCMonth();
+  const currentMonth = date.getMonth();
 
   // Get first day of month
   const firstDay: Date = new Date(date.getTime());
@@ -96,7 +96,7 @@ export const getMonthArr = (
   firstDay.setDate(1);
 
   // Get day of week
-  const firstDayOfWeek: number = firstDay.getUTCDay();
+  const firstDayOfWeek: number = firstDay.getDay();
 
   // Get date of monday
   const mondayDateUTC: DateUTC =
@@ -109,7 +109,7 @@ export const getMonthArr = (
   // Loop through weeks until reaching the desired number of weeks or until the date goes to another month
   while (
     month.length < getNumOfWeeks ||
-    lastDayOfWeek.getUTCMonth() === currentMonth
+    lastDayOfWeek.getMonth() === currentMonth
   ) {
     const weekArr: Date[] = [];
     for (let day = 0; day < 7; day++) {
