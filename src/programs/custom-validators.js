@@ -1,5 +1,5 @@
 import { registerDecorator } from 'class-validator';
-import { SessionDate } from './extra-types';
+import { SessionDate } from './extra-types.js';
 export function IsUTCDate() {
     return function (object, propertyName) {
         registerDecorator({
