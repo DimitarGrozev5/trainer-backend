@@ -1,4 +1,5 @@
 import { validIds } from '../programs/index.js';
+import HttpError from '../models/HttpError.js';
 
 export const getProgramId =
   ({ fromParams = true, fromBody = false } = {}) =>
